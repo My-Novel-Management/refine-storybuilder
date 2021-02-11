@@ -12,6 +12,7 @@ setup(
         author_email='nagisc007@yahoo.co.jp',
         packages=find_packages(),
         scripts=['bin/storybuilder'],
+        test_suites='tests',
         description='Story Building Helper',
         long_description="""StoryBuilder is the helper for story building such as novel, movie screenplay etc.
         """,
