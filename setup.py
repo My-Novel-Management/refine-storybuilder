@@ -19,9 +19,12 @@ setup(
         license=LICENSE,
         author=AUTHOR,
         author_email=EMAIL,
-        packages=find_packages(),
         scripts=['bin/storybuilder'],
+        install_requires=[
+            "PyYAML",
+        ],
         description=SHORT_DESCRIPTION,
         long_description=LONG_DESCRITPYION,
+        packages=find_packages(),
         tests_require=['pytest',],
 )
