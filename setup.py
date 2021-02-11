@@ -1,19 +1,27 @@
 #!/usr/bin/env python3
 from setuptools import setup, find_packages
-import sys
 
 from storybuilder import __version__ as VERSION
 
+
+# Define constants
+PACKAGE_NAME = 'storybuilder'
+LICENSE = 'MIT'
+AUTHOR = 'N.T.WORKS'
+EMAIL = 'nagisc007@yahoo.co.jp'
+SHORT_DESCRIPTION = 'Helper application to build your story'
+LONG_DESCRITPYION = """StoryBuilder is the helper application that build your story, novel, screenplay or game scripts.
+"""
+
 setup(
-        name='storybuilder',
+        name=PACKAGE_NAME,
         version=VERSION,
-        license='MIT',
-        author='N.T.WORKS',
-        author_email='nagisc007@yahoo.co.jp',
+        license=LICENSE,
+        author=AUTHOR,
+        author_email=EMAIL,
         packages=find_packages(),
         scripts=['bin/storybuilder'],
-        test_suites='tests',
-        description='Story Building Helper',
-        long_description="""StoryBuilder is the helper for story building such as novel, movie screenplay etc.
-        """,
+        description=SHORT_DESCRIPTION,
+        long_description=LONG_DESCRITPYION,
+        tests_require=['pytest',],
 )
