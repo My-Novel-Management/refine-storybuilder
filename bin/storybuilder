@@ -7,9 +7,12 @@ sys.path.append('storybuilder')
 
 
 def main():
-    from storybuilder.hello import helloworld
-    helloworld()
-    return 0
+    # application initialize
+    from storybuilder.application import Application
+    app = Application()
+
+    # run application
+    return app.run()
 
 
 if __name__ == '__main__':

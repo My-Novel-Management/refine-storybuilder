@@ -1,6 +1,6 @@
 """Main StoryBuilder Package"""
 
 
-# Define public values
-__version__ = "0.7.0"
+# Define public constants
+__version__ = "0.0.1"
 
