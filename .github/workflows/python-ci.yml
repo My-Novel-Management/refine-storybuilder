@@ -21,25 +21,30 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.7, 3.8]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-  
+
       # Setup python
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-
-      # Install python library
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          # このパスは Ubuntu に固有です
+          path: ~/.cache/pip
+          # 対応する要件ファイルにキャッシュヒットがあるかどうかを確認する
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        run: pip install -r requirements.txt
 
       # Lint by flake8
       - name: Lint with flake8
@@ -50,12 +55,12 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test
         run: |
-          python setup.py test
+          pytest
 
-      # Runs a single command using the runners shell
+      # Install test
       - name: Install app
         run: python setup.py install
 
-      # Runs a set of commands using the runners shell
+      # Runs application
       - name: Run storybuilder
         run: storybuilder
