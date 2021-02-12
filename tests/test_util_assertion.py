@@ -20,6 +20,7 @@ def test_assertion_is_int__failure(x):
     with pytest.raises(AssertionError):
         is_int(x)
 
+
 @pytest.mark.parametrize("x",
         ["a", "日本語",
             """Multi
