@@ -7,6 +7,10 @@ import os
 import sys
 
 
+# my modules
+from storybuilder import USR_CACHE_DIR
+
+
 # Formatters
 FILE_FORMATTER = logging.Formatter("[%(levelname)s:%(asctime)s:%(module)s]: %(message)s")
 """Format for a log file."""
@@ -19,14 +23,13 @@ DEBUG_FORMATTER = logging.Formatter("%(levelname)-8s %(asctime)s [%(module)s.%(f
 
 
 # Directories
-HOME = os.environ['HOME']
-CACHE_DIR = os.path.join(HOME, '.cache')
-BUILER_CACHE_DIR = os.path.join(CACHE_DIR, 'storybuilder')
+BUILER_CACHE_DIR = os.path.join(USR_CACHE_DIR, 'storybuilder')
+"""str: path of this application cache directory."""
 
 
 # check the cache directory
-if not os.path.exists(CACHE_DIR):
-    os.makedirs(CACHE_DIR)
+if not os.path.exists(USR_CACHE_DIR):
+    os.makedirs(USR_CACHE_DIR)
 
 if not os.path.exists(BUILER_CACHE_DIR):
     os.makedirs(BUILER_CACHE_DIR)
