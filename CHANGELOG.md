@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - github workflow/python-ci
 - requirements text
+- application
 - assertion
+- commandline parser
 - logger
+- setting
 ### Changed
 - setup: using requirements
 
