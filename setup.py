@@ -26,5 +26,5 @@ setup(
         description=SHORT_DESCRIPTION,
         long_description=LONG_DESCRITPYION,
         packages=find_packages(),
-        tests_require=['pytest',],
+        tests_require=['pytest'],
 )
