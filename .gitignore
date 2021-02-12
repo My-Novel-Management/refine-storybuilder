@@ -132,4 +132,4 @@ dmypy.json
 *.swp
 
 # for test
-Sample/
+sample/
