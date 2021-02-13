@@ -32,6 +32,12 @@ USR_CONFIG_DIR = os.path.join(HOME, '.config')
 PROJECTFILE_NAME = f"project.{YAML_EXT}"
 """str: the file name of project."""
 
+BOOKFILE_NAME = f"book.{YAML_EXT}"
+"""str: file name of book."""
+
+ORDERFILE_NAME = f"order.{YAML_EXT}"
+"""str: file name of order."""
+
 CHAPTER_DIR = 'chapters'
 """str: directory name of chapter files."""
 
