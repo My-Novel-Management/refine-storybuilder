@@ -15,6 +15,9 @@ PROJECT_TEMP_FILE = 'project_tmp.yml'
 BOOK_TEMP_FILE = 'book_tmp.yml'
 """str: file name of book template."""
 
+ORDER_TEMP_FILE = 'order_tmp.yml'
+"""str: file name of order template."""
+
 CHAPTER_TEMP_FILE = 'chapter_tmp.yml'
 """str: file name of chapter template."""
 
@@ -51,6 +54,7 @@ class TemplateCreator(object):
         data_path = os.path.join(os.path.dirname(__file__), 'data')
         self.project_tmp = os.path.join(data_path, PROJECT_TEMP_FILE)
         self.book_tmp = os.path.join(data_path, BOOK_TEMP_FILE)
+        self.order_tmp = os.path.join(data_path, ORDER_TEMP_FILE)
         self.chapter_tmp = os.path.join(data_path, CHAPTER_TEMP_FILE)
         self.episode_tmp = os.path.join(data_path, EPISODE_TEMP_FILE)
         self.scene_tmp = os.path.join(data_path, SCENE_TEMP_FILE)
@@ -77,6 +81,12 @@ class TemplateCreator(object):
         with open(self.plot_tmp, 'r', encoding=BASE_ENCODING) as pfile:
             plot = pfile.read()
         return tmp.replace('{PLOT}', plot)
+
+    def get_order_template(self) -> str:
+        tmp = ""
+        with open(self.order_tmp, 'r', encoding=BASE_ENCODING) as file:
+            tmp = file.read()
+        return tmp
 
     def get_chapter_template(self) -> str:
         tmp = ""
