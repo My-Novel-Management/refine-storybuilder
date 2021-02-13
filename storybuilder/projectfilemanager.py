@@ -33,6 +33,46 @@ class ProjectFileManager(object):
         logger.debug("Initialized: ProjectFileManager")
 
     # methods
+    def check_and_create_chapter_dir(self) -> bool:
+        if not os.path.exists(self.chapters):
+            os.makedirs(self.chapters)
+        return True
+
+    def check_and_create_episode_dir(self) -> bool:
+        if not os.path.exists(self.episodes):
+            os.makedirs(self.episodes)
+        return True
+
+    def check_and_create_scene_dir(self) -> bool:
+        if not os.path.exists(self.scenes):
+            os.makedirs(self.scenes)
+        return True
+
+    def check_and_create_note_dir(self) -> bool:
+        if not os.path.exists(self.notes):
+            os.makedirs(self.notes)
+        return True
+
+    def check_and_create_person_dir(self) -> bool:
+        if not os.path.exists(self.persons):
+            os.makedirs(self.persons)
+        return True
+
+    def check_and_create_stage_dir(self) -> bool:
+        if not os.path.exists(self.stages):
+            os.makedirs(self.stages)
+        return True
+
+    def check_and_create_item_dir(self) -> bool:
+        if not os.path.exists(self.items):
+            os.makedirs(self.items)
+        return True
+
+    def check_and_create_word_dir(self) -> bool:
+        if not os.path.exists(self.words):
+            print(os.makedirs(self.words))
+        return True
+
     def create_project_file(self, filename: str, default_txt: str) -> bool:
         path = os.path.join(self.base_path, os.path.basename(filename))
         with open(path, 'w', encoding=BASE_ENCODING) as file:
@@ -41,6 +81,13 @@ class ProjectFileManager(object):
         return True
 
     def create_book_file(self, filename: str, default_txt: str) -> bool:
+        path = os.path.join(self.base_path, os.path.basename(filename))
+        with open(path, 'w', encoding=BASE_ENCODING) as file:
+            for line in default_txt:
+                file.write(line)
+        return True
+
+    def create_order_file(self, filename: str, default_txt: str) -> bool:
         path = os.path.join(self.base_path, os.path.basename(filename))
         with open(path, 'w', encoding=BASE_ENCODING) as file:
             for line in default_txt:
