@@ -29,6 +29,39 @@ USR_CACHE_DIR = os.path.join(HOME, '.cache')
 USR_CONFIG_DIR = os.path.join(HOME, '.config')
 """str: path of user config directory."""
 
+PROJECTFILE_EXT = YAML_EXT
+"""str: extention of project file."""
+
+BOOKFILE_EXT = YAML_EXT
+"""str: extention of book file."""
+
+ORDERFILE_EXT = YAML_EXT
+"""str: extention of order file."""
+
+CHAPTERFILE_EXT = YAML_EXT
+"""str: extention of chapter file."""
+
+EPISODEFILE_EXT = YAML_EXT
+"""str: extention of episode file."""
+
+SCENEFILE_EXT = MARKDOWN_EXT
+"""str: extention of scene file."""
+
+NOTEFILE_EXT = MARKDOWN_EXT
+"""str: extention of note file."""
+
+PERSONFILE_EXT = YAML_EXT
+"""str: extention of person file."""
+
+STAGEFILE_EXT = YAML_EXT
+"""str: extention of stage file."""
+
+ITEMFILE_EXT = YAML_EXT
+"""str: extention of item file."""
+
+WORDFILE_EXT = YAML_EXT
+"""str: extention of word file."""
+
 PROJECTFILE_NAME = f"project.{YAML_EXT}"
 """str: the file name of project."""
 
@@ -37,6 +70,7 @@ BOOKFILE_NAME = f"book.{YAML_EXT}"
 
 ORDERFILE_NAME = f"order.{YAML_EXT}"
 """str: file name of order."""
+
 
 CHAPTER_DIR = 'chapters'
 """str: directory name of chapter files."""
