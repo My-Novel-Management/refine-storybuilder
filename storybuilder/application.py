@@ -48,19 +48,23 @@ class Application(object):
 
         # if command init
         if cmdargs.cmd == 'init':
+            logger.debug("Command: init: start")
             if not has_project:
                 # create project file
                 if not self.create_project_file():
                     logger.error("Error in create project file!")
                     result = False
-            else:
-                if not self.create_project_templates():
-                    logger.error("Error in create project templates!")
-                    result = False
+
+            if not self.create_project_templates():
+                logger.error("Error in create project templates!")
+                result = False
+
             if not result:
                 logger.error("Error and Exit! [in initialize phase]")
                 exit_code = 1
                 return exit_code
+            logger.debug("Exit code: %s", exit_code)
+            return exit_code
 
         # switch by command
         if cmdargs.cmd in ('b', 'build'):
@@ -353,6 +357,8 @@ class Application(object):
             logger.error("Failure check or create word directory!")
             return False
 
+        logger.debug("Created: template directories")
+
         # create temp files
         if not self.fm.create_book_file(BOOKFILE_NAME, self.tmp_creator.get_book_template()):
             logger.error("Failure create a default BOOK file!")
@@ -394,6 +400,7 @@ class Application(object):
             logger.error("Failure create a default WORD file!")
             return False
 
+        logger.debug("Created: template files")
         return True
 
     # private methods
