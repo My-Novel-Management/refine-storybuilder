@@ -63,6 +63,120 @@ class Application(object):
                 return exit_code
 
         # switch by command
+        if cmdargs.cmd in ('b', 'build'):
+            # Build
+            pass
+        elif cmdargs.cmd in ('a', 'add'):
+            # Add
+            if cmdargs.arg0 in ('c', 'chapter'):
+                pass
+            elif cmdargs.arg0 in ('e', 'episode'):
+                pass
+            elif cmdargs.arg0 in ('s', 'scene'):
+                pass
+            elif cmdargs.arg0 in ('n', 'note'):
+                pass
+            elif cmdargs.arg0 in ('p', 'person'):
+                pass
+            elif cmdargs.arg0 in ('t', 'stage'):
+                pass
+            elif cmdargs.arg0 in ('i', 'item'):
+                pass
+            elif cmdargs.arg0 in ('w', 'word'):
+                pass
+            else:
+                logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
+                result = False
+        elif cmdargs.cmd in ('e', 'edit'):
+            # Edit
+            if cmdargs.arg0 in ('b', 'book'):
+                pass
+            elif cmdargs.arg0 in ('o', 'order'):
+                pass
+            elif cmdargs.arg0 in ('c', 'chapter'):
+                pass
+            elif cmdargs.arg0 in ('e', 'episode'):
+                pass
+            elif cmdargs.arg0 in ('s', 'scene'):
+                pass
+            elif cmdargs.arg0 in ('n', 'note'):
+                pass
+            elif cmdargs.arg0 in ('p', 'person'):
+                pass
+            elif cmdargs.arg0 in ('t', 'stage'):
+                pass
+            elif cmdargs.arg0 in ('i', 'item'):
+                pass
+            elif cmdargs.arg0 in ('w', 'word'):
+                pass
+            else:
+                logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
+                result = False
+        elif cmdargs.cmd in ('d', 'delete'):
+            # Delete
+            if cmdargs.arg0 in ('c', 'chapter'):
+                pass
+            elif cmdargs.arg0 in ('e', 'episode'):
+                pass
+            elif cmdargs.arg0 in ('s', 'scene'):
+                pass
+            elif cmdargs.arg0 in ('n', 'note'):
+                pass
+            elif cmdargs.arg0 in ('p', 'person'):
+                pass
+            elif cmdargs.arg0 in ('t', 'stage'):
+                pass
+            elif cmdargs.arg0 in ('i', 'item'):
+                pass
+            elif cmdargs.arg0 in ('w', 'word'):
+                pass
+            else:
+                logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
+                result = False
+        elif cmdargs.cmd in ('r', 'rename'):
+            # Rename
+            if cmdargs.arg0 in ('c', 'chapter'):
+                pass
+            elif cmdargs.arg0 in ('e', 'episode'):
+                pass
+            elif cmdargs.arg0 in ('s', 'scene'):
+                pass
+            elif cmdargs.arg0 in ('n', 'note'):
+                pass
+            elif cmdargs.arg0 in ('p', 'person'):
+                pass
+            elif cmdargs.arg0 in ('t', 'stage'):
+                pass
+            elif cmdargs.arg0 in ('i', 'item'):
+                pass
+            elif cmdargs.arg0 in ('w', 'word'):
+                pass
+            else:
+                logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
+                result = False
+        elif cmdargs.cmd in ('l', 'list'):
+            # List
+            if cmdargs.arg0 in ('c', 'chapter'):
+                pass
+            elif cmdargs.arg0 in ('e', 'episode'):
+                pass
+            elif cmdargs.arg0 in ('s', 'scene'):
+                pass
+            elif cmdargs.arg0 in ('n', 'note'):
+                pass
+            elif cmdargs.arg0 in ('p', 'person'):
+                pass
+            elif cmdargs.arg0 in ('t', 'stage'):
+                pass
+            elif cmdargs.arg0 in ('i', 'item'):
+                pass
+            elif cmdargs.arg0 in ('w', 'word'):
+                pass
+            else:
+                logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
+                result = False
+        else:
+            logger.error("Unimplement command!: %s", cmdargs.cmd)
 
         # check result
         if not result:
@@ -71,7 +185,133 @@ class Application(object):
         return exit_code
 
     # methods (command)
+    def on_add_chapter(self) -> bool:
+        return True
+
+    def on_add_episode(self) -> bool:
+        return True
+
+    def on_add_scene(self) -> bool:
+        return True
+
+    def on_add_note(self) -> bool:
+        return True
+
+    def on_add_person(self) -> bool:
+        return True
+
+    def on_add_stage(self) -> bool:
+        return True
+
+    def on_add_item(self) -> bool:
+        return True
+
+    def on_add_word(self) -> bool:
+        return True
+
+    def on_delete_chapter(self) -> bool:
+        return True
+
+    def on_delete_episode(self) -> bool:
+        return True
+
+    def on_delete_scene(self) -> bool:
+        return True
+
+    def on_delete_note(self) -> bool:
+        return True
+
+    def on_delete_person(self) -> bool:
+        return True
+
+    def on_delete_stage(self) -> bool:
+        return True
+
+    def on_delete_item(self) -> bool:
+        return True
+
+    def on_delete_word(self) -> bool:
+        return True
+
+    def on_edit_book(self) -> bool:
+        return True
+
+    def on_edit_order(self) -> bool:
+        return True
+
+    def on_edit_chapter(self) -> bool:
+        return True
+
+    def on_edit_episode(self) -> bool:
+        return True
+
+    def on_edit_scene(self) -> bool:
+        return True
+
+    def on_edit_note(self) -> bool:
+        return True
+
+    def on_edit_person(self) -> bool:
+        return True
+
+    def on_edit_stage(self) -> bool:
+        return True
+
+    def on_edit_item(self) -> bool:
+        return True
+
+    def on_edit_word(self) -> bool:
+        return True
+
     def on_init_project(self) -> bool:
+        return True
+
+    def on_list_chapter(self) -> bool:
+        return True
+
+    def on_list_episode(self) -> bool:
+        return True
+
+    def on_list_scene(self) -> bool:
+        return True
+
+    def on_list_note(self) -> bool:
+        return True
+
+    def on_list_person(self) -> bool:
+        return True
+
+    def on_list_stage(self) -> bool:
+        return True
+
+    def on_list_item(self) -> bool:
+        return True
+
+    def on_list_word(self) -> bool:
+        return True
+
+    def on_rename_chapter(self) -> bool:
+        return True
+
+    def on_rename_episode(self) -> bool:
+        return True
+
+    def on_rename_scene(self) -> bool:
+        return True
+
+    def on_rename_note(self) -> bool:
+        return True
+
+    def on_rename_person(self) -> bool:
+        return True
+
+    def on_rename_stage(self) -> bool:
+        return True
+
+    def on_rename_item(self) -> bool:
+        return True
+
+    def on_rename_word(self) -> bool:
         return True
 
     # methods
