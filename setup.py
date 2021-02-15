@@ -25,6 +25,7 @@ setup(
         ],
         description=SHORT_DESCRIPTION,
         long_description=LONG_DESCRITPYION,
+        package_data={'storybuilder/data': ['data/*']},
         packages=find_packages(),
         tests_require=['pytest'],
 )
