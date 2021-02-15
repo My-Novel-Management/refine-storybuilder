@@ -169,6 +169,8 @@ class Application(object):
             else:
                 logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
                 result = False
+        elif cmdargs.cmd == 'cleartrash':
+            result = self.on_clear_trashbox()
         else:
             logger.error("Unimplement command!: %s", cmdargs.cmd)
 
@@ -251,37 +253,49 @@ class Application(object):
             return False
         return self.on_edit_word(_fname)
 
+    def on_clear_trashbox(self) -> bool:
+        logger.debug("Command: Clear Trashbox")
+        return self.fm.clear_trashbox()
+
     def on_delete_chapter(self, fname: str) -> bool:
         logger.debug("Command: Delete Chapter: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter the deleting chapter file name: ", self.fm.get_chapter_name_list())
+        return self.fm.delete_chapter_file(_fname)
 
     def on_delete_episode(self, fname: str) -> bool:
         logger.debug("Command: Delete Episode: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter the deleting episode file name: ", self.fm.get_episode_name_list())
+        return self.fm.delete_episode_file(_fname)
 
     def on_delete_scene(self, fname: str) -> bool:
         logger.debug("Command: Delete Scene: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter the deleting scene file name: ", self.fm.get_scene_name_list())
+        return self.fm.delete_scene_file(_fname)
 
     def on_delete_note(self, fname: str) -> bool:
         logger.debug("Command: Delete Note: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter the deleting note file name: ", self.fm.get_note_name_list())
+        return self.fm.delete_note_file(_fname)
 
     def on_delete_person(self, fname: str) -> bool:
         logger.debug("Command: Delete Person: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter the deleting person file name: ", self.fm.get_person_name_list())
+        return self.fm.delete_person_file(_fname)
 
     def on_delete_stage(self, fname: str) -> bool:
         logger.debug("Command: Delete Stage: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter the deleting stage file name: ", self.fm.get_stage_name_list())
+        return self.fm.delete_stage_file(_fname)
 
     def on_delete_item(self, fname: str) -> bool:
         logger.debug("Command: Delete Item: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter the deleting item file name: ", self.fm.get_item_name_list())
+        return self.fm.delete_item_file(_fname)
 
     def on_delete_word(self, fname: str) -> bool:
         logger.debug("Command: Delete Word: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter the deleting word name: ", self.fm.get_word_name_list())
+        return self.fm.delete_word_file(_fname)
 
     def on_edit_book(self) -> bool:
         logger.debug("Command: Edit Book: start")
@@ -463,6 +477,10 @@ class Application(object):
 
         if not self.fm.check_and_create_word_dir():
             logger.error("Failure check or create word directory!")
+            return False
+
+        if not self.fm.check_and_create_trash_dir():
+            logger.error("Failure check or create trash directory!")
             return False
 
         logger.debug("Created: template directories")
