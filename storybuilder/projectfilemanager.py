@@ -332,6 +332,70 @@ class ProjectFileManager(object):
         return self._is_exists_path(path) or self._is_exists_path(os.path.join(self.words, path)) \
                 or self._is_exists_path(os.path.join(self.words, f"{path}.{WORDFILE_EXT}"))
 
+    def rename_chapter_file(self, fname: str, newname: str) -> bool:
+        vpath = self.validate_chapter_file_path(fname)
+        vnew = self.validate_chapter_file_path(newname)
+        if self._is_exists_path(vpath) and self._is_safepath(vnew):
+            os.rename(vpath, vnew)
+            return True
+        return False
+
+    def rename_episode_file(self, fname: str, newname: str) -> bool:
+        vpath = self.validate_episode_file_path(fname)
+        vnew = self.validate_episode_file_path(newname)
+        if self._is_exists_path(vpath) and self._is_safepath(vnew):
+            os.rename(vpath, vnew)
+            return True
+        return False
+
+    def rename_scene_file(self, fname: str, newname: str) -> bool:
+        vpath = self.validate_scene_file_path(fname)
+        vnew = self.validate_scene_file_path(newname)
+        if self._is_exists_path(vpath) and self._is_safepath(vnew):
+            os.rename(vpath, vnew)
+            return True
+        return False
+
+    def rename_note_file(self, fname: str, newname: str) -> bool:
+        vpath = self.validate_note_file_path(fname)
+        vnew = self.validate_note_file_path(newname)
+        if self._is_exists_path(vpath) and self._is_safepath(vnew):
+            os.rename(vpath, vnew)
+            return True
+        return False
+
+    def rename_person_file(self, fname: str, newname: str) -> bool:
+        vpath = self.validate_person_file_path(fname)
+        vnew = self.validate_person_file_path(newname)
+        if self._is_exists_path(vpath) and self._is_safepath(vnew):
+            os.rename(vpath, vnew)
+            return True
+        return False
+
+    def rename_stage_file(self, fname: str, newname: str) -> bool:
+        vpath = self.validate_stage_file_path(fname)
+        vnew = self.validate_stage_file_path(newname)
+        if self._is_exists_path(vpath) and self._is_safepath(vnew):
+            os.rename(vpath, vnew)
+            return True
+        return False
+
+    def rename_item_file(self, fname: str, newname: str) -> bool:
+        vpath = self.validate_item_file_path(fname)
+        vnew = self.validate_item_file_path(newname)
+        if self._is_exists_path(vpath) and self._is_safepath(vnew):
+            os.rename(vpath, vnew)
+            return True
+        return False
+
+    def rename_word_file(self, fname: str, newname: str) -> bool:
+        vpath = self.validate_word_file_path(fname)
+        vnew = self.validate_word_file_path(newname)
+        if self._is_exists_path(vpath) and self._is_safepath(vnew):
+            os.rename(vpath, vnew)
+            return True
+        return False
+
     def validate_chapter_file_path(self, fname: str) -> str:
         _fname = fname if has_extention(fname, CHAPTERFILE_EXT) else add_extention(fname, CHAPTERFILE_EXT)
         return os.path.join(self.chapters, os.path.basename(_fname))
