@@ -285,43 +285,43 @@ class Application(object):
 
     def on_edit_book(self) -> bool:
         logger.debug("Command: Edit Book: start")
-        return True
+        return self.fm.edit_book_file()
 
     def on_edit_order(self) -> bool:
         logger.debug("Command: Edit Book: start")
-        return True
+        return self.fm.edit_order_file()
 
     def on_edit_chapter(self, fname: str) -> bool:
         logger.debug("Command: Edit Chapter: start")
-        return True
+        return self.fm.edit_chapter_file(fname)
 
     def on_edit_episode(self, fname: str) -> bool:
         logger.debug("Command: Edit Episode: start")
-        return True
+        return self.fm.edit_episode_file(fname)
 
     def on_edit_scene(self, fname: str) -> bool:
         logger.debug("Command: Edit Scene: start")
-        return True
+        return self.fm.edit_scene_file(fname)
 
     def on_edit_note(self, fname: str) -> bool:
         logger.debug("Command: Edit Note: start")
-        return True
+        return self.fm.edit_note_file(fname)
 
     def on_edit_person(self, fname: str) -> bool:
         logger.debug("Command: Edit Person: start")
-        return True
+        return self.fm.edit_person_file(fname)
 
     def on_edit_stage(self, fname: str) -> bool:
         logger.debug("Command: Edit Stage: start")
-        return True
+        return self.fm.edit_stage_file(fname)
 
     def on_edit_item(self, fname: str) -> bool:
         logger.debug("Command: Edit Item: start")
-        return True
+        return self.fm.edit_item_file(fname)
 
     def on_edit_word(self, fname: str) -> bool:
         logger.debug("Command: Edit Word: start")
-        return True
+        return self.fm.edit_word_file(fname)
 
     def on_init_project(self, has_project: bool) -> bool:
         logger.debug("Command: Init project: start")
