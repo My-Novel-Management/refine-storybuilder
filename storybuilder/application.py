@@ -340,34 +340,42 @@ class Application(object):
 
     def on_list_chapter(self, fname: str) -> bool:
         logger.debug("Command: List Chapter: start")
+        print(self._serialized_namelist_of(self.fm.get_chapter_name_list(), False))
         return True
 
     def on_list_episode(self, fname: str) -> bool:
         logger.debug("Command: List Episode: start")
+        print(self._serialized_namelist_of(self.fm.get_episode_name_list(), False))
         return True
 
     def on_list_scene(self, fname: str) -> bool:
         logger.debug("Command: List Scene: start")
+        print(self._serialized_namelist_of(self.fm.get_scene_name_list(), False))
         return True
 
     def on_list_note(self, fname: str) -> bool:
         logger.debug("Command: List Note: start")
+        print(self._serialized_namelist_of(self.fm.get_note_name_list(), False))
         return True
 
     def on_list_person(self, fname: str) -> bool:
         logger.debug("Command: List Person: start")
+        print(self._serialized_namelist_of(self.fm.get_person_name_list(), False))
         return True
 
     def on_list_stage(self, fname: str) -> bool:
         logger.debug("Command: List Stage: start")
+        print(self._serialized_namelist_of(self.fm.get_stage_name_list(), False))
         return True
 
     def on_list_item(self, fname: str) -> bool:
         logger.debug("Command: List Item: start")
+        print(self._serialized_namelist_of(self.fm.get_item_name_list(), False))
         return True
 
     def on_list_word(self, fname: str) -> bool:
         logger.debug("Command: List Word: start")
+        print(self._serialized_namelist_of(self.fm.get_word_name_list(), False))
         return True
 
     def on_rename_chapter(self, fname: str) -> bool:
@@ -523,10 +531,10 @@ class Application(object):
         print(self._serialized_namelist_of(namelist))
         return input(message)
 
-    def _serialized_namelist_of(self, names: list) -> str:
+    def _serialized_namelist_of(self, names: list, with_num: bool=True) -> str:
         tmp = []
         idx = 0
         for name in names:
-            tmp.append(f"{idx}:{name}")
+            tmp.append(f"{idx}:{name}" if with_num else name)
             idx += 1
         return " ".join(tmp)
