@@ -48,17 +48,7 @@ class Application(object):
 
         # if command init
         if cmdargs.cmd == 'init':
-            logger.debug("Command: init: start")
-            if not has_project:
-                # create project file
-                if not self.create_project_file():
-                    logger.error("Error in create project file!")
-                    result = False
-
-            if not self.create_project_templates():
-                logger.error("Error in create project templates!")
-                result = False
-
+            result = self.on_init_project(has_project)
             if not result:
                 logger.error("Error and Exit! [in initialize phase]")
                 exit_code = 1
@@ -190,132 +180,186 @@ class Application(object):
 
     # methods (command)
     def on_add_chapter(self) -> bool:
+        logger.debug("Command: Add Chapter: start")
         return True
 
     def on_add_episode(self) -> bool:
+        logger.debug("Command: Add Episode: start")
         return True
 
     def on_add_scene(self) -> bool:
+        logger.debug("Command: Add Scene: start")
         return True
 
     def on_add_note(self) -> bool:
+        logger.debug("Command: Add Note: start")
         return True
 
     def on_add_person(self) -> bool:
+        logger.debug("Command: Add Person: start")
         return True
 
     def on_add_stage(self) -> bool:
+        logger.debug("Command: Add Stage: start")
         return True
 
     def on_add_item(self) -> bool:
+        logger.debug("Command: Add Item: start")
         return True
 
     def on_add_word(self) -> bool:
+        logger.debug("Command: Add Word: start")
         return True
 
     def on_delete_chapter(self) -> bool:
+        logger.debug("Command: Delete Chapter: start")
         return True
 
     def on_delete_episode(self) -> bool:
+        logger.debug("Command: Delete Episode: start")
         return True
 
     def on_delete_scene(self) -> bool:
+        logger.debug("Command: Delete Scene: start")
         return True
 
     def on_delete_note(self) -> bool:
+        logger.debug("Command: Delete Note: start")
         return True
 
     def on_delete_person(self) -> bool:
+        logger.debug("Command: Delete Person: start")
         return True
 
     def on_delete_stage(self) -> bool:
+        logger.debug("Command: Delete Stage: start")
         return True
 
     def on_delete_item(self) -> bool:
+        logger.debug("Command: Delete Item: start")
         return True
 
     def on_delete_word(self) -> bool:
+        logger.debug("Command: Delete Word: start")
         return True
 
     def on_edit_book(self) -> bool:
+        logger.debug("Command: Edit Book: start")
         return True
 
     def on_edit_order(self) -> bool:
+        logger.debug("Command: Edit Book: start")
         return True
 
     def on_edit_chapter(self) -> bool:
+        logger.debug("Command: Edit Chapter: start")
         return True
 
     def on_edit_episode(self) -> bool:
+        logger.debug("Command: Edit Episode: start")
         return True
 
     def on_edit_scene(self) -> bool:
+        logger.debug("Command: Edit Scene: start")
         return True
 
     def on_edit_note(self) -> bool:
+        logger.debug("Command: Edit Note: start")
         return True
 
     def on_edit_person(self) -> bool:
+        logger.debug("Command: Edit Person: start")
         return True
 
     def on_edit_stage(self) -> bool:
+        logger.debug("Command: Edit Stage: start")
         return True
 
     def on_edit_item(self) -> bool:
+        logger.debug("Command: Edit Item: start")
         return True
 
     def on_edit_word(self) -> bool:
+        logger.debug("Command: Edit Word: start")
         return True
 
-    def on_init_project(self) -> bool:
+    def on_init_project(self, has_project: bool) -> bool:
+        logger.debug("Command: Init project: start")
+
+        if not has_project:
+            # create project file
+            if not self.create_project_file():
+                logger.error("Error in create project file!")
+                return False
+
+        if not self.create_project_templates():
+            logger.error("Error in create project templates!")
+            return False
+
         return True
 
     def on_list_chapter(self) -> bool:
+        logger.debug("Command: List Chapter: start")
         return True
 
     def on_list_episode(self) -> bool:
+        logger.debug("Command: List Episode: start")
         return True
 
     def on_list_scene(self) -> bool:
+        logger.debug("Command: List Scene: start")
         return True
 
     def on_list_note(self) -> bool:
+        logger.debug("Command: List Note: start")
         return True
 
     def on_list_person(self) -> bool:
+        logger.debug("Command: List Person: start")
         return True
 
     def on_list_stage(self) -> bool:
+        logger.debug("Command: List Stage: start")
         return True
 
     def on_list_item(self) -> bool:
+        logger.debug("Command: List Item: start")
         return True
 
     def on_list_word(self) -> bool:
+        logger.debug("Command: List Word: start")
         return True
 
     def on_rename_chapter(self) -> bool:
+        logger.debug("Command: Rename Chapter: start")
         return True
 
     def on_rename_episode(self) -> bool:
+        logger.debug("Command: Rename Episode: start")
         return True
 
     def on_rename_scene(self) -> bool:
+        logger.debug("Command: Rename Scene: start")
         return True
 
     def on_rename_note(self) -> bool:
+        logger.debug("Command: Rename Note: start")
         return True
 
     def on_rename_person(self) -> bool:
+        logger.debug("Command: Rename Person: start")
         return True
 
     def on_rename_stage(self) -> bool:
+        logger.debug("Command: Rename Stage: start")
         return True
 
     def on_rename_item(self) -> bool:
+        logger.debug("Command: Rename Item: start")
         return True
 
     def on_rename_word(self) -> bool:
+        logger.debug("Command: Rename Word: start")
         return True
 
     # methods
