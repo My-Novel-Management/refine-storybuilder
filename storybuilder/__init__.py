@@ -98,3 +98,6 @@ ITEM_DIR = 'items'
 WORD_DIR = 'words'
 """str: directory name of word files."""
 
+TRASH_DIR = '.trash'
+"""str: directory name of trash box."""
+
