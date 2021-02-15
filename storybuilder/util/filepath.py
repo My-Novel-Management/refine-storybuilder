@@ -4,6 +4,12 @@
 import os
 
 
+def add_extention(filename: str, ext: str) -> str:
+    '''Add the extention to the filename.
+    '''
+    return f"{filename}.{ext}"
+
+
 def conv_filenames_from_fullpaths(paths: list) -> list:
     '''Get file name list that converted from fullpath list.
     '''
@@ -19,3 +25,8 @@ def conv_only_basename(filepath: str) -> str:
     '''
     return os.path.splitext(os.path.basename(filepath))[0]
 
+
+def has_extention(filename: str, ext: str) -> bool:
+    '''Check the filename has the extention.
+    '''
+    return f".{ext}" in filename
