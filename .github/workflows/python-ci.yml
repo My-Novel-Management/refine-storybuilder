@@ -76,4 +76,4 @@ jobs:
 
       # Runs application
       - name: Run storybuilder
-        run: storybuilder
+        run: storybuilder init
