@@ -63,109 +63,109 @@ class Application(object):
         elif cmdargs.cmd in ('a', 'add'):
             # Add
             if cmdargs.arg0 in ('c', 'chapter'):
-                pass
+                result = self.on_add_chapter(cmdargs.arg1)
             elif cmdargs.arg0 in ('e', 'episode'):
-                pass
+                result = self.on_add_episode(cmdargs.arg1)
             elif cmdargs.arg0 in ('s', 'scene'):
-                pass
+                result = self.on_add_scene(cmdargs.arg1)
             elif cmdargs.arg0 in ('n', 'note'):
-                pass
+                result = self.on_add_note(cmdargs.arg1)
             elif cmdargs.arg0 in ('p', 'person'):
-                pass
+                result = self.on_add_person(cmdargs.arg1)
             elif cmdargs.arg0 in ('t', 'stage'):
-                pass
+                result = self.on_add_stage(cmdargs.arg1)
             elif cmdargs.arg0 in ('i', 'item'):
-                pass
+                result = self.on_add_item(cmdargs.arg1)
             elif cmdargs.arg0 in ('w', 'word'):
-                pass
+                result = self.on_add_word(cmdargs.arg1)
             else:
                 logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
                 result = False
         elif cmdargs.cmd in ('e', 'edit'):
             # Edit
             if cmdargs.arg0 in ('b', 'book'):
-                pass
+                result = self.on_edit_book()
             elif cmdargs.arg0 in ('o', 'order'):
-                pass
+                result = self.on_edit_order()
             elif cmdargs.arg0 in ('c', 'chapter'):
-                pass
+                result = self.on_edit_chapter(cmdargs.arg1)
             elif cmdargs.arg0 in ('e', 'episode'):
-                pass
+                result = self.on_edit_episode(cmdargs.arg1)
             elif cmdargs.arg0 in ('s', 'scene'):
-                pass
+                result = self.on_edit_scene(cmdargs.arg1)
             elif cmdargs.arg0 in ('n', 'note'):
-                pass
+                result = self.on_edit_note(cmdargs.arg1)
             elif cmdargs.arg0 in ('p', 'person'):
-                pass
+                result = self.on_edit_person(cmdargs.arg1)
             elif cmdargs.arg0 in ('t', 'stage'):
-                pass
+                result = self.on_edit_stage(cmdargs.arg1)
             elif cmdargs.arg0 in ('i', 'item'):
-                pass
+                result = self.on_edit_item(cmdargs.arg1)
             elif cmdargs.arg0 in ('w', 'word'):
-                pass
+                result = self.on_edit_word(cmdargs.arg1)
             else:
                 logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
                 result = False
         elif cmdargs.cmd in ('d', 'delete'):
             # Delete
             if cmdargs.arg0 in ('c', 'chapter'):
-                pass
+                result = self.on_delete_chapter(cmdargs.arg1)
             elif cmdargs.arg0 in ('e', 'episode'):
-                pass
+                result = self.on_delete_episode(cmdargs.arg1)
             elif cmdargs.arg0 in ('s', 'scene'):
-                pass
+                result = self.on_delete_scene(cmdargs.arg1)
             elif cmdargs.arg0 in ('n', 'note'):
-                pass
+                result = self.on_delete_note(cmdargs.arg1)
             elif cmdargs.arg0 in ('p', 'person'):
-                pass
+                result = self.on_delete_person(cmdargs.arg1)
             elif cmdargs.arg0 in ('t', 'stage'):
-                pass
+                result = self.on_delete_stage(cmdargs.arg1)
             elif cmdargs.arg0 in ('i', 'item'):
-                pass
+                result = self.on_delete_item(cmdargs.arg1)
             elif cmdargs.arg0 in ('w', 'word'):
-                pass
+                result = self.on_delete_word(cmdargs.arg1)
             else:
                 logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
                 result = False
         elif cmdargs.cmd in ('r', 'rename'):
             # Rename
             if cmdargs.arg0 in ('c', 'chapter'):
-                pass
+                result = self.on_rename_chapter(cmdargs.arg1)
             elif cmdargs.arg0 in ('e', 'episode'):
-                pass
+                result = self.on_rename_episode(cmdargs.arg1)
             elif cmdargs.arg0 in ('s', 'scene'):
-                pass
+                result = self.on_rename_scene(cmdargs.arg1)
             elif cmdargs.arg0 in ('n', 'note'):
-                pass
+                result = self.on_rename_note(cmdargs.arg1)
             elif cmdargs.arg0 in ('p', 'person'):
-                pass
+                result = self.on_rename_person(cmdargs.arg1)
             elif cmdargs.arg0 in ('t', 'stage'):
-                pass
+                result = self.on_rename_stage(cmdargs.arg1)
             elif cmdargs.arg0 in ('i', 'item'):
-                pass
+                result = self.on_rename_item(cmdargs.arg1)
             elif cmdargs.arg0 in ('w', 'word'):
-                pass
+                result = self.on_rename_word(cmdargs.arg1)
             else:
                 logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
                 result = False
         elif cmdargs.cmd in ('l', 'list'):
             # List
             if cmdargs.arg0 in ('c', 'chapter'):
-                pass
+                result = self.on_list_chapter(cmdargs.arg1)
             elif cmdargs.arg0 in ('e', 'episode'):
-                pass
+                result = self.on_list_episode(cmdargs.arg1)
             elif cmdargs.arg0 in ('s', 'scene'):
-                pass
+                result = self.on_list_scene(cmdargs.arg1)
             elif cmdargs.arg0 in ('n', 'note'):
-                pass
+                result = self.on_list_note(cmdargs.arg1)
             elif cmdargs.arg0 in ('p', 'person'):
-                pass
+                result = self.on_list_person(cmdargs.arg1)
             elif cmdargs.arg0 in ('t', 'stage'):
-                pass
+                result = self.on_list_stage(cmdargs.arg1)
             elif cmdargs.arg0 in ('i', 'item'):
-                pass
+                result = self.on_list_item(cmdargs.arg1)
             elif cmdargs.arg0 in ('w', 'word'):
-                pass
+                result = self.on_list_word(cmdargs.arg1)
             else:
                 logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
                 result = False
@@ -179,67 +179,67 @@ class Application(object):
         return exit_code
 
     # methods (command)
-    def on_add_chapter(self) -> bool:
+    def on_add_chapter(self, fname: str) -> bool:
         logger.debug("Command: Add Chapter: start")
         return True
 
-    def on_add_episode(self) -> bool:
+    def on_add_episode(self, fname: str) -> bool:
         logger.debug("Command: Add Episode: start")
         return True
 
-    def on_add_scene(self) -> bool:
+    def on_add_scene(self, fname: str) -> bool:
         logger.debug("Command: Add Scene: start")
         return True
 
-    def on_add_note(self) -> bool:
+    def on_add_note(self, fname: str) -> bool:
         logger.debug("Command: Add Note: start")
         return True
 
-    def on_add_person(self) -> bool:
+    def on_add_person(self, fname: str) -> bool:
         logger.debug("Command: Add Person: start")
         return True
 
-    def on_add_stage(self) -> bool:
+    def on_add_stage(self, fname: str) -> bool:
         logger.debug("Command: Add Stage: start")
         return True
 
-    def on_add_item(self) -> bool:
+    def on_add_item(self, fname: str) -> bool:
         logger.debug("Command: Add Item: start")
         return True
 
-    def on_add_word(self) -> bool:
+    def on_add_word(self, fname: str) -> bool:
         logger.debug("Command: Add Word: start")
         return True
 
-    def on_delete_chapter(self) -> bool:
+    def on_delete_chapter(self, fname: str) -> bool:
         logger.debug("Command: Delete Chapter: start")
         return True
 
-    def on_delete_episode(self) -> bool:
+    def on_delete_episode(self, fname: str) -> bool:
         logger.debug("Command: Delete Episode: start")
         return True
 
-    def on_delete_scene(self) -> bool:
+    def on_delete_scene(self, fname: str) -> bool:
         logger.debug("Command: Delete Scene: start")
         return True
 
-    def on_delete_note(self) -> bool:
+    def on_delete_note(self, fname: str) -> bool:
         logger.debug("Command: Delete Note: start")
         return True
 
-    def on_delete_person(self) -> bool:
+    def on_delete_person(self, fname: str) -> bool:
         logger.debug("Command: Delete Person: start")
         return True
 
-    def on_delete_stage(self) -> bool:
+    def on_delete_stage(self, fname: str) -> bool:
         logger.debug("Command: Delete Stage: start")
         return True
 
-    def on_delete_item(self) -> bool:
+    def on_delete_item(self, fname: str) -> bool:
         logger.debug("Command: Delete Item: start")
         return True
 
-    def on_delete_word(self) -> bool:
+    def on_delete_word(self, fname: str) -> bool:
         logger.debug("Command: Delete Word: start")
         return True
 
@@ -251,35 +251,35 @@ class Application(object):
         logger.debug("Command: Edit Book: start")
         return True
 
-    def on_edit_chapter(self) -> bool:
+    def on_edit_chapter(self, fname: str) -> bool:
         logger.debug("Command: Edit Chapter: start")
         return True
 
-    def on_edit_episode(self) -> bool:
+    def on_edit_episode(self, fname: str) -> bool:
         logger.debug("Command: Edit Episode: start")
         return True
 
-    def on_edit_scene(self) -> bool:
+    def on_edit_scene(self, fname: str) -> bool:
         logger.debug("Command: Edit Scene: start")
         return True
 
-    def on_edit_note(self) -> bool:
+    def on_edit_note(self, fname: str) -> bool:
         logger.debug("Command: Edit Note: start")
         return True
 
-    def on_edit_person(self) -> bool:
+    def on_edit_person(self, fname: str) -> bool:
         logger.debug("Command: Edit Person: start")
         return True
 
-    def on_edit_stage(self) -> bool:
+    def on_edit_stage(self, fname: str) -> bool:
         logger.debug("Command: Edit Stage: start")
         return True
 
-    def on_edit_item(self) -> bool:
+    def on_edit_item(self, fname: str) -> bool:
         logger.debug("Command: Edit Item: start")
         return True
 
-    def on_edit_word(self) -> bool:
+    def on_edit_word(self, fname: str) -> bool:
         logger.debug("Command: Edit Word: start")
         return True
 
@@ -298,67 +298,67 @@ class Application(object):
 
         return True
 
-    def on_list_chapter(self) -> bool:
+    def on_list_chapter(self, fname: str) -> bool:
         logger.debug("Command: List Chapter: start")
         return True
 
-    def on_list_episode(self) -> bool:
+    def on_list_episode(self, fname: str) -> bool:
         logger.debug("Command: List Episode: start")
         return True
 
-    def on_list_scene(self) -> bool:
+    def on_list_scene(self, fname: str) -> bool:
         logger.debug("Command: List Scene: start")
         return True
 
-    def on_list_note(self) -> bool:
+    def on_list_note(self, fname: str) -> bool:
         logger.debug("Command: List Note: start")
         return True
 
-    def on_list_person(self) -> bool:
+    def on_list_person(self, fname: str) -> bool:
         logger.debug("Command: List Person: start")
         return True
 
-    def on_list_stage(self) -> bool:
+    def on_list_stage(self, fname: str) -> bool:
         logger.debug("Command: List Stage: start")
         return True
 
-    def on_list_item(self) -> bool:
+    def on_list_item(self, fname: str) -> bool:
         logger.debug("Command: List Item: start")
         return True
 
-    def on_list_word(self) -> bool:
+    def on_list_word(self, fname: str) -> bool:
         logger.debug("Command: List Word: start")
         return True
 
-    def on_rename_chapter(self) -> bool:
+    def on_rename_chapter(self, fname: str) -> bool:
         logger.debug("Command: Rename Chapter: start")
         return True
 
-    def on_rename_episode(self) -> bool:
+    def on_rename_episode(self, fname: str) -> bool:
         logger.debug("Command: Rename Episode: start")
         return True
 
-    def on_rename_scene(self) -> bool:
+    def on_rename_scene(self, fname: str) -> bool:
         logger.debug("Command: Rename Scene: start")
         return True
 
-    def on_rename_note(self) -> bool:
+    def on_rename_note(self, fname: str) -> bool:
         logger.debug("Command: Rename Note: start")
         return True
 
-    def on_rename_person(self) -> bool:
+    def on_rename_person(self, fname: str) -> bool:
         logger.debug("Command: Rename Person: start")
         return True
 
-    def on_rename_stage(self) -> bool:
+    def on_rename_stage(self, fname: str) -> bool:
         logger.debug("Command: Rename Stage: start")
         return True
 
-    def on_rename_item(self) -> bool:
+    def on_rename_item(self, fname: str) -> bool:
         logger.debug("Command: Rename Item: start")
         return True
 
-    def on_rename_word(self) -> bool:
+    def on_rename_word(self, fname: str) -> bool:
         logger.debug("Command: Rename Word: start")
         return True
 
