@@ -181,35 +181,75 @@ class Application(object):
     # methods (command)
     def on_add_chapter(self, fname: str) -> bool:
         logger.debug("Command: Add Chapter: start")
-        return True
+        _fname = fname if fname else input("Enter a new chapter file name: ")
+        res = self.fm.create_chapter_file(_fname, self.tmp_creator.get_chapter_template())
+        if not res:
+            logger.error("Failure: create a new chapter! %s", _fname)
+            return False
+        return self.on_edit_chapter(_fname)
 
     def on_add_episode(self, fname: str) -> bool:
         logger.debug("Command: Add Episode: start")
-        return True
+        _fname = fname if fname else input("Enter a new episode file name: ")
+        res = self.fm.create_episode_file(_fname, self.tmp_creator.get_episode_template())
+        if not res:
+            logger.error("Failure: create a new episode! %s", _fname)
+            return False
+        return self.on_edit_episode(_fname)
 
     def on_add_scene(self, fname: str) -> bool:
         logger.debug("Command: Add Scene: start")
-        return True
+        _fname = fname if fname else input("Enter a new scene file name: ")
+        res = self.fm.create_scene_file(_fname, self.tmp_creator.get_scene_template())
+        if not res:
+            logger.error("Failure: create a new scene! %s", _fname)
+            return False
+        return self.on_edit_scene(_fname)
 
     def on_add_note(self, fname: str) -> bool:
         logger.debug("Command: Add Note: start")
-        return True
+        _fname = fname if fname else input("Enter a new note file name: ")
+        res = self.fm.create_note_file(_fname, self.tmp_creator.get_note_template())
+        if not res:
+            logger.error("Failure: create a new note! %s", _fname)
+            return False
+        return self.on_edit_note(_fname)
 
     def on_add_person(self, fname: str) -> bool:
         logger.debug("Command: Add Person: start")
-        return True
+        _fname = fname if fname else input("Enter a new person file name: ")
+        res = self.fm.create_person_file(_fname, self.tmp_creator.get_person_template())
+        if not res:
+            logger.error("Failure: create a new person! %s", _fname)
+            return False
+        return self.on_edit_person(_fname)
 
     def on_add_stage(self, fname: str) -> bool:
         logger.debug("Command: Add Stage: start")
-        return True
+        _fname = fname if fname else input("Enter a new stage file name: ")
+        res =  self.fm.create_stage_file(_fname, self.tmp_creator.get_stage_template())
+        if not res:
+            logger.error("Failure: create a new stage! %s", _fname)
+            return False
+        return self.on_edit_stage(_fname)
 
     def on_add_item(self, fname: str) -> bool:
         logger.debug("Command: Add Item: start")
-        return True
+        _fname = fname if fname else input("Enter a new item file name: ")
+        res = self.fm.create_item_file(_fname, self.tmp_creator.get_item_template())
+        if not res:
+            logger.error("Failure: create a new item! %s", _fname)
+            return False
+        return self.on_edit_item(_fname)
 
     def on_add_word(self, fname: str) -> bool:
         logger.debug("Command: Add Word: start")
-        return True
+        _fname = fname if fname else input("Enter a new word file name: ")
+        res = self.fm.create_word_file(_fname, self.tmp_creator.get_word_template())
+        if not res:
+            logger.error("Failure: create a new word! %s", _fname)
+            return False
+        return self.on_edit_word(_fname)
 
     def on_delete_chapter(self, fname: str) -> bool:
         logger.debug("Command: Delete Chapter: start")
@@ -404,45 +444,55 @@ class Application(object):
         logger.debug("Created: template directories")
 
         # create temp files
-        if not self.fm.create_book_file(BOOKFILE_NAME, self.tmp_creator.get_book_template()):
-            logger.error("Failure create a default BOOK file!")
-            return False
+        if not self.fm.is_exists_book_file():
+            if not self.fm.create_book_file(BOOKFILE_NAME, self.tmp_creator.get_book_template()):
+                logger.error("Failure create a default BOOK file!")
+                return False
 
-        if not self.fm.create_order_file(ORDERFILE_NAME, self.tmp_creator.get_order_template()):
-            logger.error("Failure create a default ORDER file!")
-            return False
+        if not self.fm.is_exists_order_file():
+            if not self.fm.create_order_file(ORDERFILE_NAME, self.tmp_creator.get_order_template()):
+                logger.error("Failure create a default ORDER file!")
+                return False
 
-        if not self.fm.create_chapter_file("main.yml", self.tmp_creator.get_chapter_template()):
-            logger.error("Failure create a default CHAPTER file!")
-            return False
+        if not self.fm.is_exists_chapter_file("main.yml"):
+            if not self.fm.create_chapter_file("main.yml", self.tmp_creator.get_chapter_template()):
+                logger.error("Failure create a default CHAPTER file!")
+                return False
 
-        if not self.fm.create_episode_file("main.yml", self.tmp_creator.get_episode_template()):
-            logger.error("Failure create a default EPISODE file!")
-            return False
+        if not self.fm.is_exists_episode_file("main.yml"):
+            if not self.fm.create_episode_file("main.yml", self.tmp_creator.get_episode_template()):
+                logger.error("Failure create a default EPISODE file!")
+                return False
 
-        if not self.fm.create_scene_file("main.md", self.tmp_creator.get_scene_template()):
-            logger.error("Failure create a default SCENE file!")
-            return False
+        if not self.fm.is_exists_scene_file("main.md"):
+            if not self.fm.create_scene_file("main.md", self.tmp_creator.get_scene_template()):
+                logger.error("Failure create a default SCENE file!")
+                return False
 
-        if not self.fm.create_note_file("main.md", self.tmp_creator.get_note_template()):
-            logger.error("Failure create a default NOTE file!")
-            return False
+        if not self.fm.is_exists_note_file("main.md"):
+            if not self.fm.create_note_file("main.md", self.tmp_creator.get_note_template()):
+                logger.error("Failure create a default NOTE file!")
+                return False
 
-        if not self.fm.create_person_file("main.yml", self.tmp_creator.get_person_template()):
-            logger.error("Failure create a default PERSON file!")
-            return False
+        if not self.fm.is_exists_person_file("main.yml"):
+            if not self.fm.create_person_file("main.yml", self.tmp_creator.get_person_template()):
+                logger.error("Failure create a default PERSON file!")
+                return False
 
-        if not self.fm.create_stage_file("main.yml", self.tmp_creator.get_stage_template()):
-            logger.error("Failure create a default STAGE file!")
-            return False
+        if not self.fm.is_exists_stage_file("main.yml"):
+            if not self.fm.create_stage_file("main.yml", self.tmp_creator.get_stage_template()):
+                logger.error("Failure create a default STAGE file!")
+                return False
 
-        if not self.fm.create_item_file("main.yml", self.tmp_creator.get_item_template()):
-            logger.error("Failure create a default ITEM file!")
-            return False
+        if not self.fm.is_exists_item_file("main.yml"):
+            if not self.fm.create_item_file("main.yml", self.tmp_creator.get_item_template()):
+                logger.error("Failure create a default ITEM file!")
+                return False
 
-        if not self.fm.create_word_file("main.yml", self.tmp_creator.get_word_template()):
-            logger.error("Failure create a default WORD file!")
-            return False
+        if not self.fm.is_exists_word_file("main.yml"):
+            if not self.fm.create_word_file("main.yml", self.tmp_creator.get_word_template()):
+                logger.error("Failure create a default WORD file!")
+                return False
 
         logger.debug("Created: template files")
         return True
