@@ -372,35 +372,51 @@ class Application(object):
 
     def on_rename_chapter(self, fname: str) -> bool:
         logger.debug("Command: Rename Chapter: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter a target chapter file: ", self.fm.get_chapter_name_list())
+        _new = input("Enter a new chapter file name for changing: ")
+        return self.fm.rename_chapter_file(_fname, _new)
 
     def on_rename_episode(self, fname: str) -> bool:
         logger.debug("Command: Rename Episode: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter a target episode file: ", self.fm.get_episode_name_list())
+        _new = input("Enter a new episode file name for changing: ")
+        return self.fm.rename_episode_file(_fname, _new)
 
     def on_rename_scene(self, fname: str) -> bool:
         logger.debug("Command: Rename Scene: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter a target scene file: ", self.fm.get_scene_name_list())
+        _new = input("Enter a new scene file name for changing: ")
+        return self.fm.rename_scene_file(_fname, _new)
 
     def on_rename_note(self, fname: str) -> bool:
         logger.debug("Command: Rename Note: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter a target note file: ", self.fm.get_note_name_list())
+        _new = input("Enter a new note file name for changing: ")
+        return self.fm.rename_note_file(_fname, _new)
 
     def on_rename_person(self, fname: str) -> bool:
         logger.debug("Command: Rename Person: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter a target person file: ", self.fm.get_person_name_list())
+        _new = input("Enter a new person file name for changing: ")
+        return self.fm.rename_person_file(_fname, _new)
 
     def on_rename_stage(self, fname: str) -> bool:
         logger.debug("Command: Rename Stage: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter a target stage file: ", self.fm.get_stage_name_list())
+        _new = input("Enter a new stage file name for changing: ")
+        return self.fm.rename_stage_file(_fname, _new)
 
     def on_rename_item(self, fname: str) -> bool:
         logger.debug("Command: Rename Item: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter a target item file: ", self.fm.get_item_name_list())
+        _new = input("Enter a new item file name for changing: ")
+        return self.fm.rename_item_file(_fname, _new)
 
     def on_rename_word(self, fname: str) -> bool:
         logger.debug("Command: Rename Word: start")
-        return True
+        _fname = fname if fname else self._input_with_namelist("Enter a target word file: ", self.fm.get_word_name_list())
+        _new = input("Enter a new word file name for changing: ")
+        return self.fm.rename_word_file(_fname, _new)
 
     # methods
     def create_project_file(self) -> bool:
@@ -503,3 +519,14 @@ class Application(object):
         path = os.path.join(cwd, PROJECTFILE_NAME)
         return os.path.exists(path)
 
+    def _input_with_namelist(self, message: str, namelist: list) -> str:
+        print(self._serialized_namelist_of(namelist))
+        return input(message)
+
+    def _serialized_namelist_of(self, names: list) -> str:
+        tmp = []
+        idx = 0
+        for name in names:
+            tmp.append(f"{idx}:{name}")
+            idx += 1
+        return " ".join(tmp)
