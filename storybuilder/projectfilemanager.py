@@ -3,6 +3,7 @@
 # official libraries
 import glob
 import os
+import shutil
 import subprocess
 
 # my module
@@ -16,6 +17,7 @@ from storybuilder import PROJECTFILE_EXT, BOOKFILE_EXT, ORDERFILE_EXT
 from storybuilder import PROJECTFILE_NAME, BOOKFILE_NAME, ORDERFILE_NAME
 from storybuilder import CHAPTERFILE_EXT, EPISODEFILE_EXT, SCENEFILE_EXT, NOTEFILE_EXT
 from storybuilder import PERSONFILE_EXT, STAGEFILE_EXT, ITEMFILE_EXT, WORDFILE_EXT
+from storybuilder import TRASH_DIR
 from storybuilder.util.filepath import add_extention, conv_filenames_from_fullpaths, has_extention
 
 
@@ -38,6 +40,7 @@ class ProjectFileManager(object):
         self.stages = os.path.join(self.base_path, STAGE_DIR)
         self.items = os.path.join(self.base_path, ITEM_DIR)
         self.words = os.path.join(self.base_path, WORD_DIR)
+        self.trash = os.path.join(self.base_path, TRASH_DIR)
         logger.debug("Initialized: ProjectFileManager")
 
     # methods
@@ -79,6 +82,16 @@ class ProjectFileManager(object):
     def check_and_create_word_dir(self) -> bool:
         if not os.path.exists(self.words):
             os.makedirs(self.words)
+        return True
+
+    def check_and_create_trash_dir(self) -> bool:
+        if not os.path.exists(self.trash):
+            os.makedirs(self.trash)
+        return True
+
+    def clear_trashbox(self) -> bool:
+        for file in glob.glob(os.path.join(self.trash, '*')):
+            os.remove(file)
         return True
 
     def create_project_file(self, filename: str, default_txt: str) -> bool:
@@ -212,6 +225,30 @@ class ProjectFileManager(object):
             for line in default_txt:
                 file.write(line)
         return True
+
+    def delete_chapter_file(self, fname: str) -> bool:
+        return self._delete_file(self.validate_chapter_file_path(fname))
+
+    def delete_episode_file(self, fname: str) -> bool:
+        return self._delete_file(self.validate_episode_file_path(fname))
+
+    def delete_scene_file(self, fname: str) -> bool:
+        return self._delete_file(self.validate_scene_file_path(fname))
+
+    def delete_note_file(self, fname: str) -> bool:
+        return self._delete_file(self.validate_note_file_path(fname))
+
+    def delete_person_file(self, fname: str) -> bool:
+        return self._delete_file(self.validate_person_file_path(fname))
+
+    def delete_stage_file(self, fname: str) -> bool:
+        return self._delete_file(self.validate_stage_file_path(fname))
+
+    def delete_item_file(self, fname: str) -> bool:
+        return self._delete_file(self.validate_item_file_path(fname))
+
+    def delete_word_file(self, fname: str) -> bool:
+        return self._delete_file(self.validate_word_file_path(fname))
 
     def edit_book_file(self) -> bool:
         return self._edit_file(BOOKFILE_NAME)
@@ -429,6 +466,10 @@ class ProjectFileManager(object):
         return os.path.join(self.words, os.path.basename(_fname))
 
     # private methods
+    def _delete_file(self, fname: str) -> bool:
+        shutil.move(fname, self.trash)
+        return True
+
     def _edit_file(self, fname: str) -> bool:
         proc = subprocess.run([EDITOR, fname])
         if proc.returncode != 0:
