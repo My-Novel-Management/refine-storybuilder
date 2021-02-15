@@ -3,18 +3,20 @@
 # official libraries
 import glob
 import os
+import subprocess
 
 # my module
 from storybuilder.util.log import logger
 from storybuilder import BASE_ENCODING
 from storybuilder import PROJECTFILE_NAME
+from storybuilder import EDITOR
 from storybuilder import CHAPTER_DIR, EPISODE_DIR, SCENE_DIR, NOTE_DIR
 from storybuilder import PERSON_DIR, STAGE_DIR, ITEM_DIR, WORD_DIR
 from storybuilder import PROJECTFILE_EXT, BOOKFILE_EXT, ORDERFILE_EXT
 from storybuilder import PROJECTFILE_NAME, BOOKFILE_NAME, ORDERFILE_NAME
 from storybuilder import CHAPTERFILE_EXT, EPISODEFILE_EXT, SCENEFILE_EXT, NOTEFILE_EXT
 from storybuilder import PERSONFILE_EXT, STAGEFILE_EXT, ITEMFILE_EXT, WORDFILE_EXT
-from storybuilder.util.filepath import conv_filenames_from_fullpaths
+from storybuilder.util.filepath import add_extention, conv_filenames_from_fullpaths, has_extention
 
 
 class ProjectFileManager(object):
@@ -211,6 +213,36 @@ class ProjectFileManager(object):
                 file.write(line)
         return True
 
+    def edit_book_file(self) -> bool:
+        return self._edit_file(BOOKFILE_NAME)
+
+    def edit_order_file(self) -> bool:
+        return self._edit_file(ORDERFILE_NAME)
+
+    def edit_chapter_file(self, fname: str) -> bool:
+        return self._edit_file(self.validate_chapter_file_path(fname))
+
+    def edit_episode_file(self, fname: str) -> bool:
+        return self._edit_file(self.validate_episode_file_path(fname))
+
+    def edit_scene_file(self, fname: str) -> bool:
+        return self._edit_file(self.validate_scene_file_path(fname))
+
+    def edit_note_file(self, fname: str) -> bool:
+        return self._edit_file(self.validate_note_file_path(fname))
+
+    def edit_person_file(self, fname: str) -> bool:
+        return self._edit_file(self.validate_person_file_path(fname))
+
+    def edit_stage_file(self, fname: str) -> bool:
+        return self._edit_file(self.validate_stage_file_path(fname))
+
+    def edit_item_file(self, fname: str) -> bool:
+        return self._edit_file(self.validate_item_file_path(fname))
+
+    def edit_word_file(self, fname: str) -> bool:
+        return self._edit_file(self.validate_word_file_path(fname))
+
     def get_chapter_list(self) -> list:
         return self._get_current_file_list(self.chapters, CHAPTERFILE_EXT)
 
@@ -300,12 +332,45 @@ class ProjectFileManager(object):
         return self._is_exists_path(path) or self._is_exists_path(os.path.join(self.words, path)) \
                 or self._is_exists_path(os.path.join(self.words, f"{path}.{WORDFILE_EXT}"))
 
-    # private methods
-    def _is_exists_path(self, path: str) -> bool:
-        return os.path.exists(path)
+    def validate_chapter_file_path(self, fname: str) -> str:
+        _fname = fname if has_extention(fname, CHAPTERFILE_EXT) else add_extention(fname, CHAPTERFILE_EXT)
+        return os.path.join(self.chapters, os.path.basename(_fname))
 
-    def _is_safepath(self, filename: str) -> bool:
-        return not os.path.exists(filename)
+    def validate_episode_file_path(self, fname: str) -> str:
+        _fname = fname if has_extention(fname, EPISODEFILE_EXT) else add_extention(fname, EPISODEFILE_EXT)
+        return os.path.join(self.episodes, os.path.basename(_fname))
+
+    def validate_scene_file_path(self, fname: str) -> str:
+        _fname = fname if has_extention(fname, SCENEFILE_EXT) else add_extention(fname, SCENEFILE_EXT)
+        return os.path.join(self.scenes, os.path.basename(_fname))
+
+    def validate_note_file_path(self, fname: str) -> str:
+        _fname = fname if has_extention(fname, NOTEFILE_EXT) else add_extention(fname, NOTEFILE_EXT)
+        return os.path.join(self.notes, os.path.basename(_fname))
+
+    def validate_person_file_path(self, fname: str) -> str:
+        _fname = fname if has_extention(fname, PERSONFILE_EXT) else add_extention(PERSONFILE_EXT)
+        return os.path.join(self.persons, os.path.basename(_fname))
+
+    def validate_stage_file_path(self, fname: str) -> str:
+        _fname = fname if has_extention(fname, STAGEFILE_EXT) else add_extention(STAGEFILE_EXT)
+        return os.path.join(self.stages, os.path.basename(_fname))
+
+    def validate_item_file_path(self, fname: str) -> str:
+        _fname = fname if has_extention(fname, ITEMFILE_EXT) else add_extention(ITEMFILE_EXT)
+        return os.path.join(self.items, os.path.basename(_fname))
+
+    def validate_word_file_path(self, fname: str) -> str:
+        _fname = fname if has_extention(fname, WORDFILE_EXT) else add_extention(WORDFILE_EXT)
+        return os.path.join(self.words, os.path.basename(_fname))
+
+    # private methods
+    def _edit_file(self, fname: str) -> bool:
+        proc = subprocess.run([EDITOR, fname])
+        if proc.returncode != 0:
+            logger.error("Subprocess Error!: %s", proc.returncode)
+            return False
+        return True
 
     def _get_current_file_list(self, dirname: str, ext: str) -> list:
         return glob.glob(os.path.join(dirname, f"*.{ext}"))
@@ -316,4 +381,10 @@ class ProjectFileManager(object):
             return filename
         else:
             return f"{basename}.{default_ext}"
+
+    def _is_exists_path(self, path: str) -> bool:
+        return os.path.exists(path)
+
+    def _is_safepath(self, filename: str) -> bool:
+        return not os.path.exists(filename)
 
