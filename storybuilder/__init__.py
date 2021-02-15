@@ -18,6 +18,8 @@ YAML_EXT = 'yml'
 MARKDOWN_EXT = 'md'
 """str: extention of Markdown file."""
 
+EDITOR = 'vim'
+"""str: main editor."""
 
 # Base paths
 HOME = os.environ['HOME']
