@@ -462,7 +462,7 @@ class Application(object):
     def on_reject_scene(self, fname: str) -> bool:
         _fname = fname if fname else self._input_with_namelist("Enter the reject target scene name: ", self.fm.get_scene_name_list())
         _target = self._input_with_namelist("Enter the target episode name: ", self.fm.get_episode_name_list())
-        return True
+        return self.fm.reject_scene_from_episode(_fname, _target)
 
     ## Rename
     def on_rename_chapter(self, fname: str) -> bool:

@@ -432,8 +432,8 @@ class ProjectFileManager(object):
     def reject_scene_from_episode(self, fname: str, target: str) -> bool:
         # TODO: check file exists
         order_data = self.get_order_data()
-        updated = {}
-        return True
+        updated = self.dm.remove_scene_from_episode_in_order(order_data, self.dm.conv_scenedata_name(fname), self.dm.conv_episodedata_name(target))
+        return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
 
     def rename_chapter_file(self, fname: str, newname: str) -> bool:
         vpath = self.validate_chapter_file_path(fname)

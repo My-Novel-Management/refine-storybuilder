@@ -63,6 +63,21 @@ class DataManager(object):
     def remove_scene_from_episode_in_order(self, orderdata: dict, scenename: str,
             episodename: str) -> dict:
         tmp = orderdata.copy()
+        if not 'book' in tmp.keys():
+            logger.error("Invalid order data!: %s", tmp)
+            return orderdata
+        if not self._has_episode_in_book(tmp['book'], episodename):
+            logger.error("Missing the target episode!: %s", episodename)
+            return orderdata
+        for ch_data in tmp['book']:
+            for val in ch_data.values():
+                for ep_data in val:
+                    if episodename in ep_data.keys():
+                        res = []
+                        for data in ep_data[episodename]:
+                            if data != scenename:
+                                res.append(data)
+                        ep_data[episodename] = res
         return tmp
 
     def set_chapter_to_book_in_order(self, orderdata: dict, chaptername: str) -> dict:
@@ -103,7 +118,6 @@ class DataManager(object):
                 for ep_data in val:
                     if episodename in ep_data.keys():
                         ep_data[episodename].append(scenename)
-        print(tmp)
         return tmp
 
     # private methods
@@ -145,6 +159,14 @@ class DataManager(object):
         for data in chapterdata:
             if episodename in data:
                 return True
+        return False
+
+    def _has_episode_in_book(self, bookdata: list, episodename: str) -> bool:
+        for ch_data in bookdata:
+            for val in ch_data.values():
+                for ep_data in val:
+                    if episodename in ep_data.keys():
+                        return True
         return False
 
     def _has_scene(self, episodedata: list, scenename: str) -> bool:
