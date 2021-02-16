@@ -391,14 +391,12 @@ class ProjectFileManager(object):
 
     def push_chapter_to_book(self, fname: str) -> bool:
         order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
-        _fname = self._filename_only_basename(fname)
-        updated_data = self.dm.set_chapter_to_book_in_order(order_data, f"chapter/{_fname}")
-        return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated_data))
+        updated = self.dm.set_chapter_to_book_in_order(order_data, self.dm.conv_chapterdata_name(fname))
+        return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
 
     def reject_chapter_from_book(self, fname: str) -> bool:
         order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
-        _fname = self._filename_only_basename(fname)
-        updated = self.dm.remove_chapter_from_book_in_order(order_data, f"chapter/{_fname}")
+        updated = self.dm.remove_chapter_from_book_in_order(order_data, self.dm.conv_chapterdata_name(fname))
         return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
 
     def rename_chapter_file(self, fname: str, newname: str) -> bool:

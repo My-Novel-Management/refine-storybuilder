@@ -1,9 +1,11 @@
 """Data management utility module for YAML and Storybuilder data."""
 
 # official libraries
+import os
 
 # my modules
 from storybuilder.util.log import logger
+from storybuilder.util.filepath import conv_only_basename
 
 
 class DataManager(object):
@@ -14,6 +16,15 @@ class DataManager(object):
         pass
 
     # methods
+    def conv_chapterdata_name(self, basename: str) -> str:
+        return f"chapter/{conv_only_basename(basename)}"
+
+    def conv_episodedata_name(self, basename: str) -> str:
+        return f"episode/{conv_only_basename(basename)}"
+
+    def conv_scenedata_name(self, basename: str) -> str:
+        return f"scene/{conv_only_basename(basename)}"
+
     def remove_chapter_from_book_in_order(self, orderdata: dict, chaptername: str) -> dict:
         tmp = orderdata.copy()
         res = []
@@ -36,8 +47,16 @@ class DataManager(object):
         if 'book' in tmp.keys():
             if not tmp['book']:
                 tmp['book'] = []
-            tmp['book'].append({chaptername:[]})
+            if not self._has_chapter(tmp['book'], chaptername):
+                tmp['book'].append({chaptername:[]})
         else:
             logger.error("Invalid order data! %s", tmp)
             return orderdata
         return tmp
+
+    # private methods
+    def _has_chapter(self, bookdata: list, chaptername: str) -> bool:
+        for data in bookdata:
+            if chaptername in data:
+                return True
+        return False
