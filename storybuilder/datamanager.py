@@ -60,6 +60,11 @@ class DataManager(object):
         tmp['book'][ch_idx][chaptername] = res
         return tmp
 
+    def remove_scene_from_episode_in_order(self, orderdata: dict, scenename: str,
+            episodename: str) -> dict:
+        tmp = orderdata.copy()
+        return tmp
+
     def set_chapter_to_book_in_order(self, orderdata: dict, chaptername: str) -> dict:
         tmp = orderdata.copy()
         if 'book' in tmp.keys():
@@ -85,6 +90,20 @@ class DataManager(object):
         if not self._has_episode(ch_data, episodename):
             idx = self._get_chapter_index(tmp['book'], chaptername)
             tmp['book'][idx][chaptername].append({episodename:[]})
+        return tmp
+
+    def set_scene_to_episode_in_order(self, orderdata: dict, scenename: str,
+            episodename: str) -> dict:
+        tmp = orderdata.copy()
+        if not 'book' in tmp.keys():
+            logger.error("Invalid order data!: %s", tmp)
+            return orderdata
+        for ch_data in tmp['book']:
+            for val in ch_data.values():
+                for ep_data in val:
+                    if episodename in ep_data.keys():
+                        ep_data[episodename].append(scenename)
+        print(tmp)
         return tmp
 
     # private methods

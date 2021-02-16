@@ -396,26 +396,44 @@ class ProjectFileManager(object):
         return True
 
     def push_chapter_to_book(self, fname: str) -> bool:
+        # TODO: check file exists
         order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
         updated = self.dm.set_chapter_to_book_in_order(order_data, self.dm.conv_chapterdata_name(fname))
         return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
 
     def push_episode_to_chapter(self, fname: str, target: str) -> bool:
+        # TODO: check file exists
         order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
         updated = self.dm.set_episode_to_chapter_in_order(order_data,
                 self.dm.conv_episodedata_name(fname),
                 self.dm.conv_chapterdata_name(target))
         return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
 
+    def push_scene_to_episode(self, fname: str, target: str) -> bool:
+        # TODO: check file exists
+        order_data = self.get_order_data()
+        updated = self.dm.set_scene_to_episode_in_order(order_data,
+                self.dm.conv_scenedata_name(fname),
+                self.dm.conv_episodedata_name(target))
+        return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
+
     def reject_chapter_from_book(self, fname: str) -> bool:
+        # TODO: check file exists
         order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
         updated = self.dm.remove_chapter_from_book_in_order(order_data, self.dm.conv_chapterdata_name(fname))
         return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
 
     def reject_episode_from_chapter(self, fname: str, target: str) -> bool:
+        # TODO: check file exists
         order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
         updated = self.dm.remove_episode_from_chapter_in_order(order_data, self.dm.conv_episodedata_name(fname), self.dm.conv_chapterdata_name(target))
         return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
+
+    def reject_scene_from_episode(self, fname: str, target: str) -> bool:
+        # TODO: check file exists
+        order_data = self.get_order_data()
+        updated = {}
+        return True
 
     def rename_chapter_file(self, fname: str, newname: str) -> bool:
         vpath = self.validate_chapter_file_path(fname)

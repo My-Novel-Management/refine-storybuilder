@@ -447,7 +447,7 @@ class Application(object):
     def on_push_scene(self, fname: str) -> bool:
         _fname = fname if fname else self._input_with_namelist("Enter the push target scene name: ", self.fm.get_scene_name_list())
         _target = self._input_with_namelist("Enter the target episode name: ", self.fm.get_episode_name_list())
-        return True
+        return self.fm.push_scene_to_episode(_fname, _target)
 
     ## Reject
     def on_reject_chapter(self, fname: str) -> bool:
