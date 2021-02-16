@@ -414,7 +414,8 @@ class ProjectFileManager(object):
 
     def reject_episode_from_chapter(self, fname: str, target: str) -> bool:
         order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
-        return True
+        updated = self.dm.remove_episode_from_chapter_in_order(order_data, self.dm.conv_episodedata_name(fname), self.dm.conv_chapterdata_name(target))
+        return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
 
     def rename_chapter_file(self, fname: str, newname: str) -> bool:
         vpath = self.validate_chapter_file_path(fname)
