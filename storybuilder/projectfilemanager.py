@@ -294,6 +294,12 @@ class ProjectFileManager(object):
     def get_ordered_scenes(self) -> list:
         return []
 
+    def get_order_data(self) -> dict:
+        return self.fp.get_from_yaml(ORDERFILE_NAME)
+
+    def get_order_data_by_yaml(self) -> str:
+        return self.fp.conv_dumpdata_as_yaml(self.get_order_data())
+
     def get_chapter_list(self) -> list:
         return self._get_current_file_list(self.chapters, CHAPTERFILE_EXT)
 
@@ -394,10 +400,21 @@ class ProjectFileManager(object):
         updated = self.dm.set_chapter_to_book_in_order(order_data, self.dm.conv_chapterdata_name(fname))
         return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
 
+    def push_episode_to_chapter(self, fname: str, target: str) -> bool:
+        order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
+        updated = self.dm.set_episode_to_chapter_in_order(order_data,
+                self.dm.conv_episodedata_name(fname),
+                self.dm.conv_chapterdata_name(target))
+        return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
+
     def reject_chapter_from_book(self, fname: str) -> bool:
         order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
         updated = self.dm.remove_chapter_from_book_in_order(order_data, self.dm.conv_chapterdata_name(fname))
         return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
+
+    def reject_episode_from_chapter(self, fname: str, target: str) -> bool:
+        order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
+        return True
 
     def rename_chapter_file(self, fname: str, newname: str) -> bool:
         vpath = self.validate_chapter_file_path(fname)

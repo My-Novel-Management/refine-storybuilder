@@ -162,7 +162,9 @@ class Application(object):
                 result = False
         elif cmdargs.cmd in ('l', 'list'):
             # List
-            if cmdargs.arg0 in ('c', 'chapter'):
+            if cmdargs.arg0 in ('o', 'order'):
+                result = self.on_list_order()
+            elif cmdargs.arg0 in ('c', 'chapter'):
                 result = self.on_list_chapter(cmdargs.arg1)
             elif cmdargs.arg0 in ('e', 'episode'):
                 result = self.on_list_episode(cmdargs.arg1)
@@ -387,6 +389,11 @@ class Application(object):
         return True
 
     ## List
+    def on_list_order(self) -> bool:
+        logger.debug("Command: List Order: start")
+        print(self.fm.get_order_data_by_yaml())
+        return True
+
     def on_list_chapter(self, fname: str) -> bool:
         logger.debug("Command: List Chapter: start")
         print(self._serialized_namelist_of(self.fm.get_chapter_name_list(), False))
@@ -434,7 +441,8 @@ class Application(object):
 
     def on_push_episode(self, fname: str) -> bool:
         _fname = fname if fname else self._input_with_namelist("Enter the push target episode name: ", self.fm.get_episode_name_list())
-        return True
+        _target = self._input_with_namelist("Enter the target chapter name: ", self.fm.get_chapter_name_list())
+        return self.fm.push_episode_to_chapter(_fname, _target)
 
     def on_push_scene(self, fname: str) -> bool:
         _fname = fname if fname else self._input_with_namelist("Enter the push target scene name: ", self.fm.get_scene_name_list())
@@ -447,7 +455,8 @@ class Application(object):
 
     def on_reject_episode(self, fname: str) -> bool:
         _fname = fname if fname else self._input_with_namelist("Enter the reject target episode name: ", self.fm.get_episode_name_list())
-        return True
+        _target = self._input_with_namelist("Enter the target chapter name: ", self.fm.get_chapter_name_list())
+        return self.fm.reject_episode_from_chapter(_fname, _target)
 
     def on_reject_scene(self, fname: str) -> bool:
         _fname = fname if fname else self._input_with_namelist("Enter the reject target scene name: ", self.fm.get_scene_name_list())
