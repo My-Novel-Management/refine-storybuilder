@@ -47,14 +47,26 @@ class Application(object):
             has_project = False
 
         # if command init
-        if cmdargs.cmd == 'init':
-            result = self.on_init_project(has_project)
+        if cmdargs.cmd == 'init' and not has_project:
+            result = self.on_init_project()
             if not result:
                 logger.error("Error and Exit! [in initialize phase]")
                 exit_code = 1
                 return exit_code
+            # create temp
+            result = self.create_project_templates()
+            if not result:
+                logger.error("Failure: create templates!")
+                exit_code = 1
             logger.debug("Exit code: %s", exit_code)
             return exit_code
+
+        if has_project:
+            result = self.create_project_templates()
+            if not result:
+                logger.error("Failure: create templates!")
+                exit_code = 1
+                return exit_code
 
         # switch by command
         if cmdargs.cmd in ('b', 'build'):
@@ -104,7 +116,7 @@ class Application(object):
             elif cmdargs.arg0 in ('w', 'word'):
                 result = self.on_edit_word(cmdargs.arg1)
             else:
-                logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
+                logger.error("Unknown Edit command argument!: %s", cmdargs.arg0)
                 result = False
         elif cmdargs.cmd in ('d', 'delete'):
             # Delete
@@ -125,7 +137,7 @@ class Application(object):
             elif cmdargs.arg0 in ('w', 'word'):
                 result = self.on_delete_word(cmdargs.arg1)
             else:
-                logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
+                logger.error("Unknown Delete command argument!: %s", cmdargs.arg0)
                 result = False
         elif cmdargs.cmd in ('r', 'rename'):
             # Rename
@@ -146,7 +158,7 @@ class Application(object):
             elif cmdargs.arg0 in ('w', 'word'):
                 result = self.on_rename_word(cmdargs.arg1)
             else:
-                logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
+                logger.error("Unknown Rename command argument!: %s", cmdargs.arg0)
                 result = False
         elif cmdargs.cmd in ('l', 'list'):
             # List
@@ -167,7 +179,29 @@ class Application(object):
             elif cmdargs.arg0 in ('w', 'word'):
                 result = self.on_list_word(cmdargs.arg1)
             else:
-                logger.error("Unknown Add command argument!: %s", cmdargs.arg0)
+                logger.error("Unknown List command argument!: %s", cmdargs.arg0)
+                result = False
+        elif cmdargs.cmd in ('p', 'push'):
+            # Push
+            if cmdargs.arg0 in ('c', 'chapter'):
+                result = self.on_push_chapter(cmdargs.arg1)
+            elif cmdargs.arg0 in ('e', 'episode'):
+                result = self.on_push_episode(cmdargs.arg1)
+            elif cmdargs.arg0 in ('s', 'scene'):
+                result = self.on_push_scene(cmdargs.arg1)
+            else:
+                logger.error("Unknown Push command argument!: %s", cmdargs.arg0)
+                result = False
+        elif cmdargs.cmd in ('j', 'reject'):
+            # Reject
+            if cmdargs.arg0 in ('c', 'chapter'):
+                result = self.on_reject_chapter(cmdargs.arg1)
+            elif cmdargs.arg0 in ('e', 'episode'):
+                result = self.on_reject_episode(cmdargs.arg1)
+            elif cmdargs.arg0 in ('s', 'scene'):
+                result = self.on_reject_scene(cmdargs.arg1)
+            else:
+                logger.error("Unkown Reject command argument!: %s", cmdargs.arg0)
                 result = False
         elif cmdargs.cmd == 'cleartrash':
             result = self.on_clear_trashbox()
@@ -181,6 +215,8 @@ class Application(object):
         return exit_code
 
     # methods (command)
+
+    ## Add
     def on_add_chapter(self, fname: str) -> bool:
         logger.debug("Command: Add Chapter: start")
         _fname = fname if fname else input("Enter a new chapter file name: ")
@@ -253,10 +289,12 @@ class Application(object):
             return False
         return self.on_edit_word(_fname)
 
+    ## Clear trashbox
     def on_clear_trashbox(self) -> bool:
         logger.debug("Command: Clear Trashbox")
         return self.fm.clear_trashbox()
 
+    ## Delete
     def on_delete_chapter(self, fname: str) -> bool:
         logger.debug("Command: Delete Chapter: start")
         _fname = fname if fname else self._input_with_namelist("Enter the deleting chapter file name: ", self.fm.get_chapter_name_list())
@@ -297,6 +335,7 @@ class Application(object):
         _fname = fname if fname else self._input_with_namelist("Enter the deleting word name: ", self.fm.get_word_name_list())
         return self.fm.delete_word_file(_fname)
 
+    ## Edit
     def on_edit_book(self) -> bool:
         logger.debug("Command: Edit Book: start")
         return self.fm.edit_book_file()
@@ -337,21 +376,17 @@ class Application(object):
         logger.debug("Command: Edit Word: start")
         return self.fm.edit_word_file(fname)
 
-    def on_init_project(self, has_project: bool) -> bool:
+    ## Init
+    def on_init_project(self) -> bool:
         logger.debug("Command: Init project: start")
 
-        if not has_project:
-            # create project file
-            if not self.create_project_file():
-                logger.error("Error in create project file!")
-                return False
-
-        if not self.create_project_templates():
-            logger.error("Error in create project templates!")
+        if not self.create_project_file():
+            logger.error("Error in create project file!")
             return False
 
         return True
 
+    ## List
     def on_list_chapter(self, fname: str) -> bool:
         logger.debug("Command: List Chapter: start")
         print(self._serialized_namelist_of(self.fm.get_chapter_name_list(), False))
@@ -392,6 +427,33 @@ class Application(object):
         print(self._serialized_namelist_of(self.fm.get_word_name_list(), False))
         return True
 
+    ## Push
+    def on_push_chapter(self, fname: str) -> bool:
+        _fname = fname if fname else self._input_with_namelist("Enter the push target chapter name: ", self.fm.get_chapter_name_list())
+        return self.fm.push_chapter_to_book(_fname)
+
+    def on_push_episode(self, fname: str) -> bool:
+        _fname = fname if fname else self._input_with_namelist("Enter the push target episode name: ", self.fm.get_episode_name_list())
+        return True
+
+    def on_push_scene(self, fname: str) -> bool:
+        _fname = fname if fname else self._input_with_namelist("Enter the push target scene name: ", self.fm.get_scene_name_list())
+        return True
+
+    ## Reject
+    def on_reject_chapter(self, fname: str) -> bool:
+        _fname = fname if fname else self._input_with_namelist("Enter the reject target chapter name: ", self.fm.get_chapter_name_list())
+        return self.fm.reject_chapter_from_book(_fname)
+
+    def on_reject_episode(self, fname: str) -> bool:
+        _fname = fname if fname else self._input_with_namelist("Enter the reject target episode name: ", self.fm.get_episode_name_list())
+        return True
+
+    def on_reject_scene(self, fname: str) -> bool:
+        _fname = fname if fname else self._input_with_namelist("Enter the reject target scene name: ", self.fm.get_scene_name_list())
+        return True
+
+    ## Rename
     def on_rename_chapter(self, fname: str) -> bool:
         logger.debug("Command: Rename Chapter: start")
         _fname = fname if fname else self._input_with_namelist("Enter a target chapter file: ", self.fm.get_chapter_name_list())

@@ -18,6 +18,8 @@ from storybuilder import PROJECTFILE_NAME, BOOKFILE_NAME, ORDERFILE_NAME
 from storybuilder import CHAPTERFILE_EXT, EPISODEFILE_EXT, SCENEFILE_EXT, NOTEFILE_EXT
 from storybuilder import PERSONFILE_EXT, STAGEFILE_EXT, ITEMFILE_EXT, WORDFILE_EXT
 from storybuilder import TRASH_DIR
+from storybuilder.datamanager import DataManager
+from storybuilder.fileparser import FileParser
 from storybuilder.util.filepath import add_extention, conv_filenames_from_fullpaths, has_extention
 
 
@@ -31,6 +33,9 @@ class ProjectFileManager(object):
         Arguments:
             project_base_path: the base path for this project.
         """
+        self.fp = FileParser()
+        self.dm = DataManager()
+        # path setting
         self.base_path = project_base_path
         self.chapters = os.path.join(self.base_path, CHAPTER_DIR)
         self.episodes = os.path.join(self.base_path, EPISODE_DIR)
@@ -280,6 +285,15 @@ class ProjectFileManager(object):
     def edit_word_file(self, fname: str) -> bool:
         return self._edit_file(self.validate_word_file_path(fname))
 
+    def get_ordered_chapters(self) -> list:
+        return []
+
+    def get_ordered_episodes(self) -> list:
+        return []
+
+    def get_ordered_scenes(self) -> list:
+        return []
+
     def get_chapter_list(self) -> list:
         return self._get_current_file_list(self.chapters, CHAPTERFILE_EXT)
 
@@ -368,6 +382,24 @@ class ProjectFileManager(object):
     def is_exists_word_file(self, path: str) -> bool:
         return self._is_exists_path(path) or self._is_exists_path(os.path.join(self.words, path)) \
                 or self._is_exists_path(os.path.join(self.words, f"{path}.{WORDFILE_EXT}"))
+
+    def overwrite_order_file(self, data: str) -> bool:
+        logger.debug("TEST: %s", data)
+        with open(ORDERFILE_NAME, 'w', encoding=BASE_ENCODING) as file:
+            file.write(data)
+        return True
+
+    def push_chapter_to_book(self, fname: str) -> bool:
+        order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
+        _fname = self._filename_only_basename(fname)
+        updated_data = self.dm.set_chapter_to_book_in_order(order_data, f"chapter/{_fname}")
+        return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated_data))
+
+    def reject_chapter_from_book(self, fname: str) -> bool:
+        order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
+        _fname = self._filename_only_basename(fname)
+        updated = self.dm.remove_chapter_from_book_in_order(order_data, f"chapter/{_fname}")
+        return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
 
     def rename_chapter_file(self, fname: str, newname: str) -> bool:
         vpath = self.validate_chapter_file_path(fname)
@@ -479,6 +511,10 @@ class ProjectFileManager(object):
 
     def _get_current_file_list(self, dirname: str, ext: str) -> list:
         return glob.glob(os.path.join(dirname, f"*.{ext}"))
+
+    def _filename_only_basename(self, filename: str) -> str:
+        basename, ext = os.path.splitext(filename)
+        return basename
 
     def _filename_validated_with_extention(self, filename: str, default_ext: str) -> str:
         basename, ext = os.path.splitext(filename)
