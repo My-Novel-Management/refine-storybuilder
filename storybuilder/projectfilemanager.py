@@ -18,6 +18,7 @@ from storybuilder import PROJECTFILE_NAME, BOOKFILE_NAME, ORDERFILE_NAME
 from storybuilder import CHAPTERFILE_EXT, EPISODEFILE_EXT, SCENEFILE_EXT, NOTEFILE_EXT
 from storybuilder import PERSONFILE_EXT, STAGEFILE_EXT, ITEMFILE_EXT, WORDFILE_EXT
 from storybuilder import TRASH_DIR
+from storybuilder import CHAPTERFILE_EXT, EPISODEFILE_EXT, SCENEFILE_EXT
 from storybuilder.datamanager import DataManager
 from storybuilder.fileparser import FileParser
 from storybuilder.util.filepath import add_extention, conv_filenames_from_fullpaths, has_extention
@@ -299,6 +300,42 @@ class ProjectFileManager(object):
 
     def get_order_data_by_yaml(self) -> str:
         return self.fp.conv_dumpdata_as_yaml(self.get_order_data())
+
+    def get_data_from_ordername(self, name: str) -> dict:
+        base = self.get_basename_from_ordername(name)
+        category = self.get_category_from_ordername(name)
+        if category == 'chapter':
+            # chapter data
+            chaptername = self.validate_chapter_file_path(name)
+            if not self._is_exists_path(chaptername):
+                logger.error("Missing the chapter file!: %s", chaptername)
+                return {}
+            return self.fp.get_from_yaml(chaptername)
+        elif category == 'episode':
+            # episode data
+            episodename = self.validate_episode_file_path(name)
+            if not self._is_exists_path(episodename):
+                logger.error("Missing the episode file!: %s", episodename)
+                return {}
+            return self.fp.get_from_yaml(episodename)
+        elif category == 'scene':
+            # scene data
+            scenename = self.validate_scene_file_path(name)
+            if not self._is_exists_path(scenename):
+                logger.error("Missing the scene file!: %s", scenename)
+                return {}
+            return self.fp.get_from_markdown(scenename)
+        else:
+            logger.error("Invalid the category in order data!: %s", category)
+            return {}
+
+    def get_basename_from_ordername(self, name: str) -> str:
+        _category, _base = name.split('/')
+        return _base
+
+    def get_category_from_ordername(self, name: str) -> str:
+        _category, _base = name.split('/')
+        return _category
 
     def get_chapter_list(self) -> list:
         return self._get_current_file_list(self.chapters, CHAPTERFILE_EXT)

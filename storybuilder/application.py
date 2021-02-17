@@ -5,6 +5,7 @@ import os
 
 # my modules
 from storybuilder.commandlineparser import CommandlineParser
+from storybuilder.projectbuilder import ProjectBuilder
 from storybuilder.projectfilemanager import ProjectFileManager
 from storybuilder.templatecreator import TemplateCreator
 from storybuilder.util.log import logger
@@ -22,6 +23,7 @@ class Application(object):
     def __init__(self):
         # base setting
         self.fm = ProjectFileManager(os.getcwd())
+        self.pb = ProjectBuilder(self.fm)
         self.tmp_creator = TemplateCreator()
         logger.debug("Initialized: Application")
 
@@ -71,7 +73,7 @@ class Application(object):
         # switch by command
         if cmdargs.cmd in ('b', 'build'):
             # Build
-            pass
+            result = self.on_build()
         elif cmdargs.cmd in ('a', 'add'):
             # Add
             if cmdargs.arg0 in ('c', 'chapter'):
@@ -290,6 +292,11 @@ class Application(object):
             logger.error("Failure: create a new word! %s", _fname)
             return False
         return self.on_edit_word(_fname)
+
+    ## Build
+    def on_build(self) -> bool:
+        logger.debug("Command: Build project: start")
+        return self.pb.build()
 
     ## Clear trashbox
     def on_clear_trashbox(self) -> bool:
