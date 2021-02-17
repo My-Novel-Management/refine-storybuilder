@@ -423,16 +423,16 @@ class ProjectFileManager(object):
         updated = self.dm.remove_chapter_from_book_in_order(order_data, self.dm.conv_chapterdata_name(fname))
         return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
 
-    def reject_episode_from_chapter(self, fname: str, target: str) -> bool:
+    def reject_episode_from_chapter(self, fname: str) -> bool:
         # TODO: check file exists
         order_data = self.fp.get_from_yaml(ORDERFILE_NAME)
-        updated = self.dm.remove_episode_from_chapter_in_order(order_data, self.dm.conv_episodedata_name(fname), self.dm.conv_chapterdata_name(target))
+        updated = self.dm.remove_episode_from_chapter_in_order(order_data, self.dm.conv_episodedata_name(fname))
         return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
 
-    def reject_scene_from_episode(self, fname: str, target: str) -> bool:
+    def reject_scene_from_episode(self, fname: str) -> bool:
         # TODO: check file exists
         order_data = self.get_order_data()
-        updated = self.dm.remove_scene_from_episode_in_order(order_data, self.dm.conv_scenedata_name(fname), self.dm.conv_episodedata_name(target))
+        updated = self.dm.remove_scene_from_episode_in_order(order_data, self.dm.conv_scenedata_name(fname))
         return self.overwrite_order_file(self.fp.conv_dumpdata_as_yaml(updated))
 
     def rename_chapter_file(self, fname: str, newname: str) -> bool:

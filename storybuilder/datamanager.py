@@ -1,6 +1,7 @@
 """Data management utility module for YAML and Storybuilder data."""
 
 # official libraries
+import copy
 import os
 
 # my modules
@@ -26,7 +27,7 @@ class DataManager(object):
         return f"scene/{conv_only_basename(basename)}"
 
     def remove_chapter_from_book_in_order(self, orderdata: dict, chaptername: str) -> dict:
-        tmp = orderdata.copy()
+        tmp = copy.deepcopy(orderdata)
         res = []
         if 'book' in tmp.keys():
             if not tmp['book']:
@@ -42,46 +43,51 @@ class DataManager(object):
             return orderdata
         return tmp
 
-    def remove_episode_from_chapter_in_order(self, orderdata: dict, episodename: str,
-            chaptername: str) -> dict:
-        tmp = orderdata.copy()
-        res = []
-        if not 'book' in tmp.keys():
-            logger.error("Invalid order data!: %s", tmp)
-            return orderdata
-        if not self._has_chapter(tmp['book'], chaptername):
-            logger.error("Missing the target chapter!: %s", chaptername)
-            return orderdata
-        ch_data = self._get_chapter(tmp['book'], chaptername)
-        ch_idx = self._get_chapter_index(tmp['book'], chaptername)
-        for data in ch_data:
-            if not episodename in data:
-                res.append(data)
-        tmp['book'][ch_idx][chaptername] = res
-        return tmp
-
-    def remove_scene_from_episode_in_order(self, orderdata: dict, scenename: str,
-            episodename: str) -> dict:
-        tmp = orderdata.copy()
+    def remove_episode_from_chapter_in_order(self, orderdata: dict, episodename) -> dict:
+        tmp = copy.deepcopy(orderdata)
+        # check exists
         if not 'book' in tmp.keys():
             logger.error("Invalid order data!: %s", tmp)
             return orderdata
         if not self._has_episode_in_book(tmp['book'], episodename):
-            logger.error("Missing the target episode!: %s", episodename)
+            logger.error("Missing the episode removed target!: %s", episodename)
             return orderdata
-        for ch_data in tmp['book']:
-            for val in ch_data.values():
-                for ep_data in val:
-                    if episodename in ep_data.keys():
-                        res = []
-                        for data in ep_data[episodename]:
-                            if data != scenename:
-                                res.append(data)
-                        ep_data[episodename] = res
+        # remove process
+        for ch_record in tmp['book']:
+            for ch_data in ch_record.values():
+                updated = []
+                for ep_record in ch_data:
+                    if not episodename in ep_record.keys():
+                        updated.append(ep_record)
+            for key in ch_record.keys():
+                ch_record[key] = updated
+        return tmp
+
+    def remove_scene_from_episode_in_order(self, orderdata: dict, scenename: str) -> dict:
+        tmp = copy.deepcopy(orderdata)
+        print("##", orderdata)
+        # check exists
+        if not 'book' in tmp.keys():
+            logger.error("Invalid order data!: %s", tmp)
+            return orderdata
+        if not self._has_scene_in_book(tmp['book'], scenename):
+            logger.error("Missing the target scene!: %s", scenename)
+            return orderdata
+        # remove process
+        for ch_record in tmp['book']:
+            for ch_data in ch_record.values():
+                for ep_record in ch_data:
+                    for ep_data in ep_record.values():
+                        updated = []
+                        for sc_name in ep_data:
+                            if sc_name != scenename:
+                                updated.append(sc_name)
+                    for key in ep_record.keys():
+                        ep_record[key] = updated
         return tmp
 
     def set_chapter_to_book_in_order(self, orderdata: dict, chaptername: str) -> dict:
-        tmp = orderdata.copy()
+        tmp = copy.deepcopy(orderdata)
         if 'book' in tmp.keys():
             if not tmp['book']:
                 tmp['book'] = []
@@ -94,7 +100,7 @@ class DataManager(object):
 
     def set_episode_to_chapter_in_order(self, orderdata: dict, episodename: str,
             chaptername: str) -> dict:
-        tmp = orderdata.copy()
+        tmp = copy.deepcopy(orderdata)
         if not 'book' in tmp.keys():
             logger.error("Invalid order data!: %s", tmp)
             return orderdata
@@ -109,7 +115,7 @@ class DataManager(object):
 
     def set_scene_to_episode_in_order(self, orderdata: dict, scenename: str,
             episodename: str) -> dict:
-        tmp = orderdata.copy()
+        tmp = copy.deepcopy(orderdata)
         if not 'book' in tmp.keys():
             logger.error("Invalid order data!: %s", tmp)
             return orderdata
@@ -175,3 +181,12 @@ class DataManager(object):
                 return True
         return False
 
+    def _has_scene_in_book(self, bookdata: list, scenename: str) -> bool:
+        for ch_record in bookdata:
+            for ch_data in ch_record.values():
+                for ep_record in ch_data:
+                    for ep_data in ep_record.values():
+                        for scene_name in ep_data:
+                            if scenename == scene_name:
+                                return True
+        return False

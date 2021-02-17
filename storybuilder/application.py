@@ -456,13 +456,11 @@ class Application(object):
 
     def on_reject_episode(self, fname: str) -> bool:
         _fname = fname if fname else self._input_with_namelist("Enter the reject target episode name: ", self.fm.get_episode_name_list())
-        _target = self._input_with_namelist("Enter the target chapter name: ", self.fm.get_chapter_name_list())
-        return self.fm.reject_episode_from_chapter(_fname, _target)
+        return self.fm.reject_episode_from_chapter(_fname)
 
     def on_reject_scene(self, fname: str) -> bool:
         _fname = fname if fname else self._input_with_namelist("Enter the reject target scene name: ", self.fm.get_scene_name_list())
-        _target = self._input_with_namelist("Enter the target episode name: ", self.fm.get_episode_name_list())
-        return self.fm.reject_scene_from_episode(_fname, _target)
+        return self.fm.reject_scene_from_episode(_fname)
 
     ## Rename
     def on_rename_chapter(self, fname: str) -> bool:
