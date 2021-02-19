@@ -340,6 +340,18 @@ class ProjectFileManager(object):
         _category, _base = name.split('/')
         return _category
 
+    def get_data_from_person_file(self, fname: str) -> dict:
+        return self.fp.get_from_yaml(self.validate_person_file_path(fname))
+
+    def get_data_from_stage_file(self, fname: str) -> dict:
+        return self.fp.get_from_yaml(self.validate_stage_file_path(fname))
+
+    def get_data_from_item_file(self, fname: str) -> dict:
+        return self.fp.get_from_yaml(self.validate_item_file_path(fname))
+
+    def get_data_from_word_file(self, fname: str) -> dict:
+        return self.fp.get_from_yaml(self.validate_word_file_path(fname))
+
     def get_chapter_list(self) -> list:
         return self._get_current_file_list(self.chapters, CHAPTERFILE_EXT)
 

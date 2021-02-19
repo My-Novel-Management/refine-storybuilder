@@ -6,7 +6,9 @@ from dataclasses import dataclass
 # my modules
 from typing import Any
 from storybuilder.datamanager import DataManager, ActionRecord
+from storybuilder.dbmanager import DBManager
 from storybuilder.projectfilemanager import ProjectFileManager
+from storybuilder.util.filepath import conv_only_basename
 from storybuilder.util.log import logger
 
 
@@ -25,9 +27,12 @@ class ProjectBuilder(object):
     def __init__(self, project_fil_manager: ProjectFileManager):
         self.fm = project_fil_manager
         self.dm = DataManager()
+        self.dbm = DBManager()
 
     # methods
     def build(self) -> bool:
+        # create db
+        self._create_tagname_db()
         # create serialized order data
         data = self.fm.get_order_data()
         tmp = []
@@ -61,7 +66,10 @@ class ProjectBuilder(object):
         #result = self.on_plot_output(story_records)
 
         # script data output
-        result = self.on_script_output(story_records)
+        #result = self.on_script_output(story_records)
+
+        # novel data output
+        result = self.on_novel_output(story_records)
         return True
 
     # about outline
@@ -145,10 +153,85 @@ class ProjectBuilder(object):
         logger.debug("Build: script: start")
         # get action records
         act_records = self._get_action_records(story_records)
-        #
+        # get story codes
+        codes = []
+        for rcd in act_records:
+            ret = self.dm.conv_storycode_from_action_record(rcd, True)
+            if ret:
+                codes.append(ret)
+        # check
+        for r in codes:
+            logger.debug("#>code> %s", r)
+        # check
+        contents_list = self._get_contents_list(story_records)
+        logger.debug("@> %s", contents_list)
+        return True
+
+    # about novel
+    def on_novel_output(self, story_records: list) -> bool:
+        logger.debug("Build: novel: start")
+        # get action records
+        act_records = self._get_action_records(story_records)
+        # get story codes
+        codes = []
+        for rcd in act_records:
+            ret = self.dm.conv_storycode_from_action_record(rcd)
+            if ret:
+                codes.append(ret)
+        # check
+        for r in codes:
+            logger.debug("#_novel_ %s", r)
+        contents_list = self._get_contents_list(story_records)
         return True
 
     # private methods
+    def _get_contents_list(self, story_records: list) -> list:
+        tmp = []
+        ch_idx, ep_idx, sc_idx = 1, 1, 1
+
+        for rcd in story_records:
+            if rcd.rcd_type == 'book':
+                # main title
+                tmp.append(rcd.data['title'])
+            elif rcd.rcd_type == 'chapter':
+                # chapter title
+                tmp.append(f"{ch_idx}. {rcd.data['title']}")
+                ch_idx += 1
+            elif rcd.rcd_type == 'episode':
+                tmp.append(f"    {ep_idx}. {rcd.data['title']}")
+                ep_idx += 1
+            elif rcd.rcd_type == 'scene':
+                tmp.append(f"        {sc_idx}. {rcd.data['title']}")
+                sc_idx += 1
+            else:
+                continue
+        return tmp
+
+    def _create_tagname_db(self) -> bool:
+        # get each list(filepaths)
+        word_list = self.fm.get_word_list()
+        item_list = self.fm.get_item_list()
+        stage_list = self.fm.get_stage_list()
+        person_list = self.fm.get_person_list()
+        # word
+        for fname in word_list:
+            data = self.fm.get_data_from_word_file(fname)
+            self.dbm.add_word_name(conv_only_basename(fname), data['name'])
+        # item
+        for fname in item_list:
+            data = self.fm.get_data_from_item_file(fname)
+            self.dbm.add_item_name(conv_only_basename(fname), data['name'])
+        # stage
+        for fname in stage_list:
+            data = self.fm.get_data_from_stage_file(fname)
+            self.dbm.add_stage_name(conv_only_basename(fname), data['name'])
+        # person
+        for fname in person_list:
+            data = self.fm.get_data_from_person_file(fname)
+            self.dbm.add_person_name(conv_only_basename(fname), data['name'], data['fullname'])
+        self.dbm.sort_db()
+        return True
+
     def _get_action_records(self, story_records: list) -> list:
         tmp = []
 
@@ -168,6 +251,21 @@ class ProjectBuilder(object):
             elif rcd.rcd_type == 'scene':
                 tmp.append(ActionRecord(
                     "scene-title", rcd.data['title'],
+                    ))
+                tmp.append(ActionRecord(
+                    "scene-camera", rcd.data['camera'],
+                    ))
+                tmp.append(ActionRecord(
+                    "scene-stage", rcd.data['stage'],
+                    ))
+                tmp.append(ActionRecord(
+                    "scene-year", rcd.data['year'],
+                    ))
+                tmp.append(ActionRecord(
+                    "scene-date", rcd.data['date'],
+                    ))
+                tmp.append(ActionRecord(
+                    "scene-time", rcd.data['time'],
                     ))
                 sc_data = rcd.data['markdown']
                 for line in sc_data:

@@ -4,7 +4,7 @@
 import copy
 import os
 from dataclasses import dataclass, field
-from typing import Union
+from typing import Any, Union
 
 # my modules
 from storybuilder.util.log import logger
@@ -20,6 +20,13 @@ class ActionRecord(object):
     desc: str=""
     flags: list=field(default_factory=list)
     note: str=""
+
+
+@dataclass
+class StoryCode(object):
+    head: str
+    body: str
+    foot: Any=None
 
 
 class DataManager(object):
@@ -52,7 +59,7 @@ class DataManager(object):
         elif _base.startswith('## '):
             # title
             logger.debug("ACT: title: %s", _base)
-            return ActionRecord("head-title", _base)
+            return ActionRecord("head-title", _base[3:])
         elif _base.startswith('['):
             # action
             logger.debug("ACT: action: %s", _base)
@@ -73,6 +80,40 @@ class DataManager(object):
             return ActionRecord("text", _base)
         else:
             logger.debug("ACT: other: %s", _base)
+            return None
+
+    def conv_storycode_from_action_record(self, record: ActionRecord, is_script: bool=False) -> Union[StoryCode, None]:
+        if 'book-title' == record.act_type:
+            return StoryCode('book-title', record.subject)
+        elif 'chapter-title' == record.act_type:
+            return StoryCode('chapter-title', record.subject)
+        elif 'episode-title' == record.act_type:
+            return StoryCode('episode-title', record.subject)
+        elif 'scene-title' == record.act_type:
+            return StoryCode('scene-title', record.subject)
+        elif 'head-title' == record.act_type:
+            return StoryCode('head-title', record.subject)
+        elif 'scene-camera' == record.act_type:
+            return StoryCode('scene-camera', record.subject)
+        elif 'scene-stage' == record.act_type:
+            return StoryCode('scene-stage', record.subject)
+        elif 'scene-year' == record.act_type:
+            return StoryCode('scene-year', record.subject)
+        elif 'scene-date' == record.act_type:
+            return StoryCode('scene-date', record.subject)
+        elif 'scene-time' == record.act_type:
+            return StoryCode('scene-time', record.subject)
+        elif 'action' == record.act_type:
+            body = record.outline if is_script else record.desc
+            if 'talk' == record.action:
+                return StoryCode('dialogue', body, record.subject)
+            elif 'think' == record.action:
+                return StoryCode('monologue', body, record.subject)
+            else:
+                return StoryCode('description', body, record.subject)
+        elif 'stage' == record.act_type:
+            return StoryCode('stage', record.subject)
+        else:
             return None
 
     def remove_chapter_from_book_in_order(self, orderdata: dict, chaptername: str) -> dict:
