@@ -3,10 +3,23 @@
 # official libraries
 import copy
 import os
+from dataclasses import dataclass, field
+from typing import Union
 
 # my modules
 from storybuilder.util.log import logger
 from storybuilder.util.filepath import conv_only_basename
+
+
+@dataclass
+class ActionRecord(object):
+    act_type: str
+    subject: str
+    action: str=""
+    outline: str=""
+    desc: str=""
+    flags: list=field(default_factory=list)
+    note: str=""
 
 
 class DataManager(object):
@@ -25,6 +38,42 @@ class DataManager(object):
 
     def conv_scenedata_name(self, basename: str) -> str:
         return f"scene/{conv_only_basename(basename)}"
+
+    def conv_action_record(self, basedata: str) -> Union[ActionRecord, None]:
+        _base = basedata.rstrip('\n\r')
+        if _base in ('', '\n', '\n\r'):
+            # empty line
+            logger.debug("ACT: empty line")
+            return None
+        elif _base.startswith('# '):
+            # comment
+            logger.debug("ACT: comment: %s", _base)
+            return ActionRecord("comment", _base)
+        elif _base.startswith('## '):
+            # title
+            logger.debug("ACT: title: %s", _base)
+            return ActionRecord("head-title", _base)
+        elif _base.startswith('['):
+            # action
+            logger.debug("ACT: action: %s", _base)
+            text = ""
+            comment = ""
+            if '# ' in _base:
+                # exists comment
+                _, comment = _base.split('# ')
+                _base = _
+            a, b = _base[1:].split(']')
+            if b:
+                text = b
+            subject, act, outline = a.split(':')
+            return ActionRecord('action', subject, act, outline, text, [], comment)
+        elif _base:
+            # text
+            logger.debug("ACT: text: %s", _base)
+            return ActionRecord("text", _base)
+        else:
+            logger.debug("ACT: other: %s", _base)
+            return None
 
     def remove_chapter_from_book_in_order(self, orderdata: dict, chaptername: str) -> dict:
         tmp = copy.deepcopy(orderdata)
