@@ -80,7 +80,7 @@ class TemplateCreator(object):
             tmp = file.read()
         with open(self.plot_tmp, 'r', encoding=BASE_ENCODING) as pfile:
             plot = pfile.read()
-        return tmp.replace('{PLOT}', plot)
+        return tmp.replace('{PLOT}', plot.rstrip('\n\r'))
 
     def get_order_template(self) -> str:
         tmp = ""
@@ -95,7 +95,7 @@ class TemplateCreator(object):
             tmp = file.read()
         with open(self.plot_tmp, 'r', encoding=BASE_ENCODING) as pfile:
             plot = pfile.read()
-        return tmp.replace('{PLOT}', plot)
+        return tmp.replace('{PLOT}', plot.rstrip('\n\r'))
 
     def get_episode_template(self) -> str:
         tmp = ""
@@ -104,7 +104,7 @@ class TemplateCreator(object):
             tmp = file.read()
         with open(self.plot_tmp, 'r', encoding=BASE_ENCODING) as pfile:
             plot = pfile.read()
-        return tmp.replace('{PLOT}', plot)
+        return tmp.replace('{PLOT}', plot.rstrip('\n\r'))
 
     def get_scene_template(self) -> str:
         tmp = ""
@@ -113,7 +113,7 @@ class TemplateCreator(object):
             tmp = file.read()
         with open(self.plot_tmp, 'r', encoding=BASE_ENCODING) as pfile:
             plot = pfile.read()
-        return tmp.replace('{PLOT}', plot)
+        return tmp.replace('{PLOT}', plot.rstrip('\n\r'))
 
     def get_note_template(self) -> str:
         tmp = ""
