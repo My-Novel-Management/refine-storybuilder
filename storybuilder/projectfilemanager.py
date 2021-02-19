@@ -301,6 +301,9 @@ class ProjectFileManager(object):
     def get_order_data_by_yaml(self) -> str:
         return self.fp.conv_dumpdata_as_yaml(self.get_order_data())
 
+    def get_data_from_book(self) -> dict:
+        return self.fp.get_from_yaml(BOOKFILE_NAME)
+
     def get_data_from_ordername(self, name: str) -> dict:
         base = self.get_basename_from_ordername(name)
         category = self.get_category_from_ordername(name)
