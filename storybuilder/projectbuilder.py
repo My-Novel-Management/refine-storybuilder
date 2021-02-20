@@ -30,7 +30,7 @@ class ProjectBuilder(object):
         self.fm = project_fil_manager
         self.dm = DataManager()
         self.dbm = DBManager()
-        self.fomatter = StoryFormatter()
+        self.formatter = StoryFormatter()
 
     # methods
     def build(self) -> bool:
@@ -47,10 +47,10 @@ class ProjectBuilder(object):
         story_records = self._get_story_record_list(serialized)
 
         # outline data output
-        result = self.on_outline_output(story_records)
+        #result = self.on_outline_output(story_records)
 
         # plot data output
-        #result = self.on_plot_output(story_records)
+        result = self.on_plot_output(story_records)
 
         # script data output
         #result = self.on_script_output(story_records)
@@ -93,16 +93,16 @@ class ProjectBuilder(object):
         contents = self._get_contents_list(story_records)
 
         # create output data
-        outputs = self.fomatter.conv_contents_list_format(contents)
+        outputs = self.formatter.conv_contents_list_format(contents)
 
-        outlines = self.fomatter.conv_outline_format('book', book_titles, book_outlines) \
-                + [self.fomatter.get_break_line()] \
-                + self.fomatter.conv_outline_format('chapter', chapter_titles, chapter_outlines) \
-                + [self.fomatter.get_break_line()] \
-                + self.fomatter.conv_outline_format('episode', episode_titles, episode_outlines) \
-                + [self.fomatter.get_break_line()] \
-                + self.fomatter.conv_outline_format('scene', scene_titles, scene_outlines)
-        output_data = outputs + [self.fomatter.get_break_line()] + outlines
+        outlines = self.formatter.conv_outline_format('book', book_titles, book_outlines) \
+                + [self.formatter.get_break_line()] \
+                + self.formatter.conv_outline_format('chapter', chapter_titles, chapter_outlines) \
+                + [self.formatter.get_break_line()] \
+                + self.formatter.conv_outline_format('episode', episode_titles, episode_outlines) \
+                + [self.formatter.get_break_line()] \
+                + self.formatter.conv_outline_format('scene', scene_titles, scene_outlines)
+        output_data = outputs + [self.formatter.get_break_line()] + outlines
 
         # output data
         return self.fm.output_as_outline(output_data)
@@ -119,6 +119,7 @@ class ProjectBuilder(object):
         scene_plots = []
         scene_titles = []
 
+        # create data
         for rcd in story_records:
             if rcd.rcd_type == 'book':
                 book_plots.append(rcd.data['plot'])
@@ -134,16 +135,23 @@ class ProjectBuilder(object):
                 scene_titles.append(rcd.data['title'])
             else:
                 continue
-        logger.debug(">> BOOK: %s", book_titles)
-        logger.debug(">> BOOK plot: %s", book_plots)
-        logger.debug(">> CHAPTER: %s", chapter_titles)
-        logger.debug(">> CHAPTER plot: %s", chapter_plots)
-        logger.debug(">> EPISODE: %s", episode_titles)
-        logger.debug(">> EPISODE plot: %s", episode_plots)
-        logger.debug(">> SCENE: %s", scene_titles)
-        logger.debug(">> SCENE plot: %s", scene_plots)
 
-        return True
+        # get contents list
+        contents = self._get_contents_list(story_records)
+
+        # create output data
+        outputs = self.formatter.conv_contents_list_format(contents)
+        plots = self.formatter.conv_plot_format('book', book_titles, book_plots) \
+                + [self.formatter.get_break_line()] \
+                + self.formatter.conv_plot_format('chapter', chapter_titles, chapter_plots) \
+                + [self.formatter.get_break_line()] \
+                + self.formatter.conv_plot_format('episode', episode_titles, episode_plots) \
+                + [self.formatter.get_break_line()] \
+                + self.formatter.conv_plot_format('scene', scene_titles, scene_plots)
+        output_data = outputs + [self.formatter.get_break_line()] + plots
+
+        # output data
+        return self.fm.output_as_plot(output_data)
 
     # about script
     def on_script_output(self, story_records: list) -> bool:

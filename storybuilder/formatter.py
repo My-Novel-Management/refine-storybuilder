@@ -35,15 +35,35 @@ class StoryFormatter(object):
         elif level == 'scene':
             tmp.append("## Scene outlines\n\n")
         else:
-            tmp.append("## outlines")
+            tmp.append("## outlines\n\n")
 
         for title, outline in zip(titles, outlines):
             tmp.append(f"**{title}**\n")
             tmp.append(f"    {outline}\n\n")
         return tmp
 
-    def conv_plot_format(self) -> list:
+    def conv_plot_format(self, level: str, titles: list, plots: list) -> list:
         tmp = []
+        if level == 'book':
+            tmp.append("## BOOK plots\n\n")
+        elif level == 'chapter':
+            tmp.append("## Chapter plots\n\n")
+        elif level == 'episode':
+            tmp.append("## Episode plots\n\n")
+        elif level == 'scene':
+            tmp.append("## Scene plots\n\n")
+        else:
+            tmp.append("## plots\n\n")
+
+        for title, plot in zip(titles, plots):
+            tmp.append(f"**{title}**\n")
+            tmp.append(f"    {plot['setup']}\n")
+            tmp.append(f"    ↓←{plot['tp1st']}\n")
+            tmp.append(f"    {plot['develop']}\n")
+            tmp.append(f"    ↓←{plot['tp2nd']}\n")
+            tmp.append(f"    {plot['climax']}\n")
+            tmp.append(f"    ↓\n")
+            tmp.append(f"    {plot['resolve']}\n\n")
         return tmp
 
     def conv_script_format(self) -> list:
