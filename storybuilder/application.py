@@ -561,6 +561,10 @@ class Application(object):
             logger.error("Failure check or create trash directory!")
             return False
 
+        if not self.fm.check_and_create_build_dir():
+            logger.error("Failure check or create build directory!")
+            return False
+
         logger.debug("Created: template directories")
 
         # create temp files

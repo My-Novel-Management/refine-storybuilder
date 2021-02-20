@@ -17,7 +17,7 @@ from storybuilder import PROJECTFILE_EXT, BOOKFILE_EXT, ORDERFILE_EXT
 from storybuilder import PROJECTFILE_NAME, BOOKFILE_NAME, ORDERFILE_NAME
 from storybuilder import CHAPTERFILE_EXT, EPISODEFILE_EXT, SCENEFILE_EXT, NOTEFILE_EXT
 from storybuilder import PERSONFILE_EXT, STAGEFILE_EXT, ITEMFILE_EXT, WORDFILE_EXT
-from storybuilder import TRASH_DIR
+from storybuilder import TRASH_DIR, BUILD_DIR
 from storybuilder import CHAPTERFILE_EXT, EPISODEFILE_EXT, SCENEFILE_EXT
 from storybuilder.datamanager import DataManager
 from storybuilder.fileparser import FileParser
@@ -47,6 +47,7 @@ class ProjectFileManager(object):
         self.items = os.path.join(self.base_path, ITEM_DIR)
         self.words = os.path.join(self.base_path, WORD_DIR)
         self.trash = os.path.join(self.base_path, TRASH_DIR)
+        self.build = os.path.join(self.base_path, BUILD_DIR)
         logger.debug("Initialized: ProjectFileManager")
 
     # methods
@@ -93,6 +94,11 @@ class ProjectFileManager(object):
     def check_and_create_trash_dir(self) -> bool:
         if not os.path.exists(self.trash):
             os.makedirs(self.trash)
+        return True
+
+    def check_and_create_build_dir(self) -> bool:
+        if not os.path.exists(self.build):
+            os.makedirs(self.build)
         return True
 
     def clear_trashbox(self) -> bool:
@@ -440,6 +446,13 @@ class ProjectFileManager(object):
     def is_exists_word_file(self, path: str) -> bool:
         return self._is_exists_path(path) or self._is_exists_path(os.path.join(self.words, path)) \
                 or self._is_exists_path(os.path.join(self.words, f"{path}.{WORDFILE_EXT}"))
+
+    def output_as_outline(self, data: list) -> bool:
+        out_data = "".join(data)
+        path = os.path.join(self.build, 'outline.md')
+        with open(path, 'w', encoding=BASE_ENCODING) as file:
+            file.write(out_data)
+        return True
 
     def overwrite_order_file(self, data: str) -> bool:
         logger.debug("TEST: %s", data)

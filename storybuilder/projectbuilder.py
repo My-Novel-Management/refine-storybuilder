@@ -70,7 +70,9 @@ class ProjectBuilder(object):
         episode_titles = []
         scene_outlines = []
         scene_titles = []
+        outputs = []
 
+        # create data
         for rcd in story_records:
             if rcd.rcd_type == 'book':
                 book_outlines.append(rcd.data['outline'])
@@ -86,16 +88,24 @@ class ProjectBuilder(object):
                 scene_titles.append(rcd.data['title'])
             else:
                 continue
-        logger.debug(">> BOOK: %s", book_titles)
-        logger.debug(">> BOOK outline: %s", book_outlines)
-        logger.debug(">> CHAPTER: %s", chapter_titles)
-        logger.debug(">> CHAPTER outline: %s", chapter_outlines)
-        logger.debug(">> EPISODE: %s", episode_titles)
-        logger.debug(">> EPISODE outline: %s", episode_outlines)
-        logger.debug(">> SCENE: %s", scene_titles)
-        logger.debug(">> SCENE outline: %s", scene_outlines)
 
-        return True
+        # get contents list
+        contents = self._get_contents_list(story_records)
+
+        # create output data
+        outputs = self.fomatter.conv_contents_list_format(contents)
+
+        outlines = self.fomatter.conv_outline_format('book', book_titles, book_outlines) \
+                + [self.fomatter.get_break_line()] \
+                + self.fomatter.conv_outline_format('chapter', chapter_titles, chapter_outlines) \
+                + [self.fomatter.get_break_line()] \
+                + self.fomatter.conv_outline_format('episode', episode_titles, episode_outlines) \
+                + [self.fomatter.get_break_line()] \
+                + self.fomatter.conv_outline_format('scene', scene_titles, scene_outlines)
+        output_data = outputs + [self.fomatter.get_break_line()] + outlines
+
+        # output data
+        return self.fm.output_as_outline(output_data)
 
     # about plot
     def on_plot_output(self, story_records: list) -> bool:
