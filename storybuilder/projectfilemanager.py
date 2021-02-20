@@ -461,6 +461,20 @@ class ProjectFileManager(object):
             file.write(out_data)
         return True
 
+    def output_as_script(self, data: list) -> bool:
+        out_data = "".join(data)
+        path = os.path.join(self.build, 'script.md')
+        with open(path, 'w', encoding=BASE_ENCODING) as file:
+            file.write(out_data)
+        return True
+
+    def output_as_novel(self, data: list) -> bool:
+        out_data = "".join(data)
+        path = os.path.join(self.build, 'novel.md')
+        with open(path, 'w', encoding=BASE_ENCODING) as file:
+            file.write(out_data)
+        return True
+
     def overwrite_order_file(self, data: str) -> bool:
         logger.debug("TEST: %s", data)
         with open(ORDERFILE_NAME, 'w', encoding=BASE_ENCODING) as file:

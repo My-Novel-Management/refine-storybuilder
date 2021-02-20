@@ -50,19 +50,23 @@ class DataManager(object):
         _base = basedata.rstrip('\n\r')
         if _base in ('', '\n', '\n\r'):
             # empty line
-            logger.debug("ACT: empty line")
             return None
         elif _base.startswith('# '):
             # comment
-            logger.debug("ACT: comment: %s", _base)
             return ActionRecord("comment", _base)
         elif _base.startswith('## '):
             # title
-            logger.debug("ACT: title: %s", _base)
             return ActionRecord("head-title", _base[3:])
+        elif _base.startswith("#!"):
+            # instruction
+            cmd, txt = "", ""
+            if len(_base[2:]) > 1:
+                cmd, txt = _base[2], _base[3:]
+            else:
+                cmd = _base[2]
+            return ActionRecord("instruction", cmd, txt)
         elif _base.startswith('['):
             # action
-            logger.debug("ACT: action: %s", _base)
             text = ""
             comment = ""
             if '# ' in _base:
@@ -76,11 +80,15 @@ class DataManager(object):
             return ActionRecord('action', subject, act, outline, text, [], comment)
         elif _base:
             # text
-            logger.debug("ACT: text: %s", _base)
             return ActionRecord("text", _base)
         else:
-            logger.debug("ACT: other: %s", _base)
             return None
+
+    def get_action_br(self) -> ActionRecord:
+        return ActionRecord('br', "")
+
+    def get_action_indent(self, num: int=1) -> ActionRecord:
+        return ActionRecord('indent', "　" * num)
 
     def conv_storycode_from_action_record(self, record: ActionRecord, is_script: bool=False) -> Union[StoryCode, None]:
         if 'book-title' == record.act_type:
@@ -103,14 +111,24 @@ class DataManager(object):
             return StoryCode('scene-date', record.subject)
         elif 'scene-time' == record.act_type:
             return StoryCode('scene-time', record.subject)
+        elif 'scene-start' == record.act_type:
+            return StoryCode('scene-start', "")
+        elif 'scene-end' == record.act_type:
+            return StoryCode('scene-end', "")
         elif 'action' == record.act_type:
             body = record.outline if is_script else record.desc
-            if 'talk' == record.action:
+            if 'talk' == record.action and body:
                 return StoryCode('dialogue', body, record.subject)
-            elif 'think' == record.action:
+            elif 'think' == record.action and body:
                 return StoryCode('monologue', body, record.subject)
-            else:
+            elif body:
                 return StoryCode('description', body, record.subject)
+            else:
+                return None
+        elif 'br' == record.act_type:
+            return StoryCode('br', "")
+        elif 'indent' == record.act_type:
+            return StoryCode('indent', record.subject)
         elif 'stage' == record.act_type:
             return StoryCode('stage', record.subject)
         else:
@@ -155,7 +173,6 @@ class DataManager(object):
 
     def remove_scene_from_episode_in_order(self, orderdata: dict, scenename: str) -> dict:
         tmp = copy.deepcopy(orderdata)
-        print("##", orderdata)
         # check exists
         if not 'book' in tmp.keys():
             logger.error("Invalid order data!: %s", tmp)

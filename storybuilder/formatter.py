@@ -5,6 +5,7 @@
 
 # my modules
 from storybuilder.util.log import logger
+from storybuilder.datamanager import StoryCode
 
 
 class StoryFormatter(object):
@@ -66,12 +67,100 @@ class StoryFormatter(object):
             tmp.append(f"    {plot['resolve']}\n\n")
         return tmp
 
-    def conv_script_format(self) -> list:
+    def conv_script_format(self, story_codes: list, is_detail: bool=False) -> list:
+        # NOTE: 要素がないときに省く
         tmp = []
+        scene_data = {
+                'camera': "",
+                'stage': "",
+                'year': "",
+                'date': "",
+                'time': "",
+                }
+        for code in story_codes:
+            assert isinstance(code, StoryCode)
+            if code.head == 'book-title':
+                tmp.append(f"# {code.body}\n\n")
+            elif code.head == 'chapter-title':
+                tmp.append(f"## {code.body}\n\n")
+            elif code.head == 'episode-title':
+                tmp.append(f"### {code.body}\n\n")
+            elif code.head == 'scene-title':
+                tmp.append(f"**{code.body}**\n\n")
+            elif code.head == 'scene-camera':
+                scene_data['camera'] = code.body
+            elif code.head == 'scene-stage':
+                scene_data['stage'] = code.body
+            elif code.head == 'scene-year':
+                scene_data['year'] = code.body
+            elif code.head == 'scene-date':
+                scene_data['date'] = code.body
+            elif code.head == 'scene-time':
+                scene_data['time'] = code.body
+            elif code.head == 'scene-start':
+                if not is_detail:
+                    tmp.append(f"○　{scene_data['stage']}（{scene_data['time']}）\n")
+                else:
+                    tmp.append(f"○　{scene_data['stage']}（{scene_data['time']}）／{scene_data['date']}-{scene_data['year']}＜{scene_data['camera']}＞\n")
+            elif code.head == 'scene-end':
+                tmp.append("\n")
+            elif code.head == 'head-title':
+                tmp.append(f"{code.body}\n")
+            elif code.head == 'description':
+                suffix = "" if code.body.endswith(('。', '、')) else "。"
+                tmp.append(f"{code.body}{suffix}")
+            elif code.head == 'dialogue':
+                tmp.append(f"{code.foot}「{code.body}」")
+            elif code.head == 'monologue':
+                tmp.append(f"{code.foot}Ｍ『{code.body}』")
+            elif code.head == 'br':
+                tmp.append("\n")
+            elif code.head == 'indent':
+                tmp.append("　")
+            else:
+                continue
         return tmp
 
-    def conv_novel_format(self) -> list:
+    def conv_novel_format(self, story_codes: list, shown_sc_title: bool=False) -> list:
         tmp = []
+        for code in story_codes:
+            assert isinstance(code, StoryCode)
+            if code.head == 'book-title':
+                tmp.append(f"# {code.body}\n\n")
+            elif code.head == 'chapter-title':
+                tmp.append(f"## {code.body}\n\n")
+            elif code.head == 'episode-title':
+                tmp.append(f"### {code.body}\n\n")
+            elif code.head == 'scene-title' and shown_sc_title:
+                tmp.append(f"**{code.body}**\n\n")
+            elif code.head == 'scene-camera':
+                continue
+            elif code.head == 'scene-stage':
+                continue
+            elif code.head == 'scene-year':
+                continue
+            elif code.head == 'scene-date':
+                continue
+            elif code.head == 'scene-time':
+                continue
+            elif code.head == 'scene-start':
+                continue
+            elif code.head == 'scene-end':
+                continue
+            elif code.head == 'head-title':
+                tmp.append(f"{code.body}\n")
+            elif code.head in ('description', 'monologue'):
+                suffix = "" if code.body.endswith(('。', '、')) else "。"
+                tmp.append(f"{code.body}{suffix}")
+            elif code.head == 'dialogue':
+                tmp.append(f"「{code.body}」")
+            elif code.head == 'br':
+                tmp.append("\n")
+            elif code.head == 'indent':
+                tmp.append("　")
+            else:
+                continue
+
         return tmp
 
     def get_break_line(self) -> str:

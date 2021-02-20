@@ -50,13 +50,13 @@ class ProjectBuilder(object):
         #result = self.on_outline_output(story_records)
 
         # plot data output
-        result = self.on_plot_output(story_records)
+        #result = self.on_plot_output(story_records)
 
         # script data output
         #result = self.on_script_output(story_records)
 
         # novel data output
-        #result = self.on_novel_output(story_records)
+        result = self.on_novel_output(story_records)
         return True
 
     # about outline
@@ -158,38 +158,88 @@ class ProjectBuilder(object):
         logger.debug("Build: script: start")
         # get action records
         act_records = self._get_action_records(story_records)
+
+        # run instructions
+        act_records_fixed = self._apply_instructions(act_records)
+
         # get story codes
         codes = []
-        for rcd in act_records:
+        for rcd in act_records_fixed:
             ret = self.dm.conv_storycode_from_action_record(rcd, True)
             if ret:
                 codes.append(ret)
-        # check
-        for r in codes:
-            logger.debug("#>code> %s", r)
-        # check
-        contents_list = self._get_contents_list(story_records)
-        logger.debug("@> %s", contents_list)
-        return True
+
+        # get contents list
+        contents = self._get_contents_list(story_records)
+
+        # create output data
+        outputs = self.formatter.conv_contents_list_format(contents)
+        scripts = self.formatter.conv_script_format(codes, True)
+        output_data = outputs + [self.formatter.get_break_line()] + scripts
+
+        # convert tags
+
+        # output data
+        return self.fm.output_as_script(output_data)
 
     # about novel
     def on_novel_output(self, story_records: list) -> bool:
         logger.debug("Build: novel: start")
         # get action records
         act_records = self._get_action_records(story_records)
+
+        # run instructions
+        act_records_fixed = self._apply_instructions(act_records)
+
         # get story codes
         codes = []
-        for rcd in act_records:
-            ret = self.dm.conv_storycode_from_action_record(rcd)
+        for rcd in act_records_fixed:
+            ret = self.dm.conv_storycode_from_action_record(rcd, False)
             if ret:
                 codes.append(ret)
-        # check
-        for r in codes:
-            logger.debug("#_novel_ %s", r)
-        contents_list = self._get_contents_list(story_records)
-        return True
+
+        # get contents list
+        contents = self._get_contents_list(story_records)
+
+        # create output data
+        outputs = self.formatter.conv_contents_list_format(contents)
+        novels = self.formatter.conv_novel_format(codes, False)
+        output_data = outputs + [self.formatter.get_break_line()] + novels
+
+        # convert tags
+
+        # output data
+        return self.fm.output_as_novel(output_data)
 
     # private methods
+    def _apply_instructions(self, action_records: list) -> list:
+        tmp = []
+        is_br_mode = True
+        has_first_indent = False
+        for rcd in action_records:
+            assert isinstance(rcd, ActionRecord)
+            if rcd.act_type == 'instruction':
+                if rcd.subject == 'P':
+                    # P mode
+                    is_br_mode = False
+                elif rcd.subject == 'E':
+                    # P mode end
+                    is_br_mode = True
+                    has_first_indent = False
+                    tmp.append(self.dm.get_action_br())
+            elif rcd.act_type == 'action':
+                if is_br_mode and not (rcd.action in ('talk', 'think')):
+                    tmp.append(self.dm.get_action_indent())
+                elif not is_br_mode and not has_first_indent:
+                    tmp.append(self.dm.get_action_indent())
+                    has_first_indent = True
+                tmp.append(rcd)
+                if is_br_mode:
+                    tmp.append(self.dm.get_action_br())
+            else:
+                tmp.append(rcd)
+        return tmp
+
     def _get_contents_list(self, story_records: list) -> list:
         tmp = []
         ch_idx, ep_idx, sc_idx = 1, 1, 1
@@ -272,16 +322,18 @@ class ProjectBuilder(object):
                 tmp.append(ActionRecord(
                     "scene-time", rcd.data['time'],
                     ))
+                tmp.append(ActionRecord(
+                    "scene-start", "",
+                    ))
                 sc_data = rcd.data['markdown']
                 for line in sc_data:
                     ret = self.dm.conv_action_record(line)
                     if ret:
+                        assert isinstance(ret, ActionRecord)
                         tmp.append(ret)
+                tmp.append(ActionRecord("scene-end", ""))
             else:
                 continue
-        # check
-        for r in tmp:
-            logger.debug("##> %s", r)
         return tmp
 
     def _get_serialized_order_fnames(self, order_data: dict) -> list:
