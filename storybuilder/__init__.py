@@ -101,3 +101,6 @@ WORD_DIR = 'words'
 TRASH_DIR = '.trash'
 """str: directory name of trash box."""
 
+BUILD_DIR = 'build'
+"""str: directory name for build."""
+
