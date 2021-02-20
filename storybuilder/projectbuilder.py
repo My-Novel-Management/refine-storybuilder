@@ -7,7 +7,9 @@ from dataclasses import dataclass
 from typing import Any
 from storybuilder.datamanager import DataManager, ActionRecord
 from storybuilder.dbmanager import DBManager
+from storybuilder.formatter import StoryFormatter
 from storybuilder.projectfilemanager import ProjectFileManager
+from storybuilder.util import assertion
 from storybuilder.util.filepath import conv_only_basename
 from storybuilder.util.log import logger
 
@@ -28,39 +30,24 @@ class ProjectBuilder(object):
         self.fm = project_fil_manager
         self.dm = DataManager()
         self.dbm = DBManager()
+        self.fomatter = StoryFormatter()
 
     # methods
     def build(self) -> bool:
         # create db
         self._create_tagname_db()
-        # create serialized order data
-        data = self.fm.get_order_data()
-        tmp = []
-        for ch_record in data['book']:
-            # chapter level
-            for key in ch_record.keys():
-                tmp.append(key)
-            for ep_record in ch_record.values():
-                # episode level
-                for ep_data in ep_record:
-                    for key in ep_data.keys():
-                        tmp.append(key)
-                    for sc_record in ep_data.values():
-                        for sc_data in sc_record:
-                            tmp.append(sc_data)
+
+        # get order data
+        order_data = assertion.is_dict(self.fm.get_order_data())
+
+        # serialized
+        serialized = assertion.is_list(self._get_serialized_order_fnames(order_data))
 
         # build each container data
-        story_records = []
-        ## book
-        story_records.append(BuildRecord('book', 'book', self.fm.get_data_from_book()))
-        for record in tmp:
-            story_records.append(
-                    BuildRecord(
-                        self.fm.get_category_from_ordername(record),
-                        self.fm.get_basename_from_ordername(record),
-                        self.fm.get_data_from_ordername(record)))
+        story_records = self._get_story_record_list(serialized)
+
         # outline data output
-        #result = self.on_outline_output(story_records)
+        result = self.on_outline_output(story_records)
 
         # plot data output
         #result = self.on_plot_output(story_records)
@@ -69,7 +56,7 @@ class ProjectBuilder(object):
         #result = self.on_script_output(story_records)
 
         # novel data output
-        result = self.on_novel_output(story_records)
+        #result = self.on_novel_output(story_records)
         return True
 
     # about outline
@@ -277,4 +264,32 @@ class ProjectBuilder(object):
         # check
         for r in tmp:
             logger.debug("##> %s", r)
+        return tmp
+
+    def _get_serialized_order_fnames(self, order_data: dict) -> list:
+        tmp = []
+        for ch_record in order_data['book']:
+            # chapter level
+            for key in ch_record.keys():
+                tmp.append(key)
+            for ep_record in ch_record.values():
+                # episode level
+                for ep_data in ep_record:
+                    for key in ep_data.keys():
+                        tmp.append(key)
+                    for sc_record in ep_data.values():
+                        for sc_data in sc_record:
+                            tmp.append(sc_data)
+        return tmp
+
+    def _get_story_record_list(self, serialized_order_names: list) -> list:
+        tmp = []
+        ## book
+        tmp.append(BuildRecord('book', 'book', self.fm.get_data_from_book()))
+        for record in serialized_order_names:
+            tmp.append(
+                    BuildRecord(
+                        self.fm.get_category_from_ordername(record),
+                        self.fm.get_basename_from_ordername(record),
+                        self.fm.get_data_from_ordername(record)))
         return tmp
