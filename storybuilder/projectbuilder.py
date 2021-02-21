@@ -279,15 +279,20 @@ class ProjectBuilder(object):
                     rcd.subject = alias[rcd.subject]
                 if is_script:
                     # script mode
-                    if rcd.act_type in ('talk', 'think'):
+                    if rcd.action in ('talk', 'think'):
                         if not rcd.outline:
                             continue
                 else:
                     # novel mode
-                    if rcd.act_type in ('talk',) and not rcd.outline and not rcd.desc:
-                        continue
-                    elif not rcd.desc:
-                        continue
+                    if rcd.action in ('talk',):
+                        # in dialogue
+                        if not rcd.outline and not rcd.desc:
+                            # if nothing text
+                            continue
+                    else:
+                        # in others
+                        if not rcd.desc:
+                            continue
                 if is_br_mode and not (rcd.action in ('talk',)):
                     tmp.append(self.dm.get_action_indent())
                 elif not is_br_mode and not has_first_indent:
