@@ -53,7 +53,7 @@ class ProjectBuilder(object):
         #result = self.on_plot_output(story_records)
 
         # script data output
-        #result = self.on_script_output(story_records)
+        result = self.on_script_output(story_records)
 
         # novel data output
         result = self.on_novel_output(story_records)
@@ -160,7 +160,7 @@ class ProjectBuilder(object):
         act_records = self._get_action_records(story_records)
 
         # run instructions
-        act_records_fixed = self._apply_instructions(act_records)
+        act_records_fixed = self._apply_instructions(act_records, True)
 
         # get story codes
         codes = []
@@ -212,7 +212,7 @@ class ProjectBuilder(object):
         return self.fm.output_as_novel(output_data)
 
     # private methods
-    def _apply_instructions(self, action_records: list) -> list:
+    def _apply_instructions(self, action_records: list, is_script: bool=False) -> list:
         tmp = []
         is_br_mode = True
         has_first_indent = False
@@ -227,7 +227,19 @@ class ProjectBuilder(object):
                     is_br_mode = True
                     has_first_indent = False
                     tmp.append(self.dm.get_action_br())
+                elif rcd.subject == 'B':
+                    # Break line
+                    tmp.append(self.dm.get_action_br())
+                else:
+                    logger.error("Unknown an instruction!: %s", rcd.subject)
             elif rcd.act_type == 'action':
+                if is_script:
+                    if rcd.act_type in ('talk', 'think'):
+                        if not rcd.outline:
+                            continue
+                else:
+                    if not rcd.outline or not rcd.desc:
+                        continue
                 if is_br_mode and not (rcd.action in ('talk', 'think')):
                     tmp.append(self.dm.get_action_indent())
                 elif not is_br_mode and not has_first_indent:

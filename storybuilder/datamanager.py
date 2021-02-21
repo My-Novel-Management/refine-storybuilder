@@ -117,8 +117,13 @@ class DataManager(object):
             return StoryCode('scene-end', "")
         elif 'action' == record.act_type:
             body = record.outline if is_script else record.desc
-            if 'talk' == record.action and body:
-                return StoryCode('dialogue', body, record.subject)
+            if 'talk' == record.action:
+                if not is_script:
+                    body = record.desc if record.desc else record.outline
+                if body:
+                    return StoryCode('dialogue', body, record.subject)
+                else:
+                    return None
             elif 'think' == record.action and body:
                 return StoryCode('monologue', body, record.subject)
             elif body:

@@ -124,6 +124,7 @@ class StoryFormatter(object):
     def conv_novel_format(self, story_codes: list, shown_sc_title: bool=False) -> list:
         tmp = []
         for code in story_codes:
+            #logger.debug("## %s", code)
             assert isinstance(code, StoryCode)
             if code.head == 'book-title':
                 tmp.append(f"# {code.body}\n\n")
