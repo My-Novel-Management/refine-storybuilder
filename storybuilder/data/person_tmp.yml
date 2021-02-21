@@ -4,7 +4,8 @@ age: 99
 birth: 1/1
 sex: male
 job: null
-calling: {me:私}
+calling:
+  me: 私
 info: null
 note: null
 
