@@ -250,6 +250,7 @@ class ProjectBuilder(object):
         tmp = []
         is_br_mode = True
         has_first_indent = False
+        alias = {}
         for rcd in action_records:
             assert isinstance(rcd, ActionRecord)
             if rcd.act_type == 'instruction':
@@ -265,9 +266,17 @@ class ProjectBuilder(object):
                     # Break line
                     tmp.append(self.dm.get_action_br())
                     is_br_mode = True
+                elif rcd.subject == 'A':
+                    # Alias
+                    short, origin = rcd.action.split('=')
+                    alias[short] = origin
+                    continue
                 else:
                     logger.error("Unknown an instruction!: %s", rcd.subject)
             elif rcd.act_type == 'action':
+                # alias
+                if rcd.subject in alias.keys():
+                    rcd.subject = alias[rcd.subject]
                 if is_script:
                     # script mode
                     if rcd.act_type in ('talk', 'think'):

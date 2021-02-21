@@ -59,12 +59,12 @@ class DataManager(object):
             return ActionRecord("head-title", _base[3:])
         elif _base.startswith("#!"):
             # instruction
-            cmd, txt = "", ""
-            if len(_base[2:]) > 1:
-                cmd, txt = _base[2], _base[3:]
+            cmd = _base[2:]
+            if ' ' in cmd:
+                _cmd, txt = cmd.split(' ')
+                return ActionRecord("instruction", _cmd, txt)
             else:
-                cmd = _base[2]
-            return ActionRecord("instruction", cmd, txt)
+                return ActionRecord("instruction", cmd)
         elif _base.startswith('['):
             # action
             text = ""
