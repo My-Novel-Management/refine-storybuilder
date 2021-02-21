@@ -525,6 +525,18 @@ class Application(object):
 
     def create_project_templates(self) -> bool:
         # create dirs
+        if not self._check_and_create_project_dirs():
+            return False
+        if not self._check_and_create_default_files():
+            return False
+
+        logger.debug("Created: template files")
+        return True
+
+    # private methods
+    def _check_and_create_project_dirs(self) -> bool:
+        logger.debug("Creating project directories")
+
         if not self.fm.check_and_create_chapter_dir():
             logger.error("Failure check or create chapter directory!")
             return False
@@ -565,9 +577,13 @@ class Application(object):
             logger.error("Failure check or create build directory!")
             return False
 
-        logger.debug("Created: template directories")
+        return True
 
-        # create temp files
+
+    def _check_and_create_default_files(self) -> bool:
+        logger.debug("Check and Creating default files")
+
+        # create basic files
         if not self.fm.is_exists_book_file():
             if not self.fm.create_book_file(BOOKFILE_NAME, self.tmp_creator.get_book_template()):
                 logger.error("Failure create a default BOOK file!")
@@ -578,54 +594,55 @@ class Application(object):
                 logger.error("Failure create a default ORDER file!")
                 return False
 
-        if not self.fm.is_exists_chapter_file("main.yml"):
+        # check and create each project files
+        if len(self.fm.get_chapter_list()) < 1:
             if not self.fm.create_chapter_file("main.yml", self.tmp_creator.get_chapter_template()):
                 logger.error("Failure create a default CHAPTER file!")
                 return False
 
-        if not self.fm.is_exists_episode_file("main.yml"):
+        if len(self.fm.get_episode_list()) < 1:
             if not self.fm.create_episode_file("main.yml", self.tmp_creator.get_episode_template()):
                 logger.error("Failure create a default EPISODE file!")
                 return False
 
-        if not self.fm.is_exists_scene_file("main.md"):
+        if len(self.fm.get_scene_list()) < 1:
             if not self.fm.create_scene_file("main.md", self.tmp_creator.get_scene_template()):
                 logger.error("Failure create a default SCENE file!")
                 return False
 
-        if not self.fm.is_exists_note_file("main.md"):
+        if len(self.fm.get_note_list()) < 1:
             if not self.fm.create_note_file("main.md", self.tmp_creator.get_note_template()):
                 logger.error("Failure create a default NOTE file!")
                 return False
 
-        if not self.fm.is_exists_person_file("main.yml"):
+        if len(self.fm.get_person_list()) < 1:
             if not self.fm.create_person_file("main.yml", self.tmp_creator.get_person_template()):
                 logger.error("Failure create a default PERSON file!")
                 return False
 
-        if not self.fm.is_exists_stage_file("main.yml"):
+        if len(self.fm.get_stage_list()) < 1:
             if not self.fm.create_stage_file("main.yml", self.tmp_creator.get_stage_template()):
                 logger.error("Failure create a default STAGE file!")
                 return False
 
-        if not self.fm.is_exists_item_file("main.yml"):
+        if len(self.fm.get_item_list()) < 1:
             if not self.fm.create_item_file("main.yml", self.tmp_creator.get_item_template()):
                 logger.error("Failure create a default ITEM file!")
                 return False
 
-        if not self.fm.is_exists_word_file("main.yml"):
+        if len(self.fm.get_word_list()) < 1:
             if not self.fm.create_word_file("main.yml", self.tmp_creator.get_word_template()):
                 logger.error("Failure create a default WORD file!")
                 return False
 
-        logger.debug("Created: template files")
         return True
 
-    # private methods
+
     def _has_project_file(self) -> bool:
         cwd = os.getcwd()
         path = os.path.join(cwd, PROJECTFILE_NAME)
         return os.path.exists(path)
+
 
     def _input_with_namelist(self, message: str, namelist: list) -> str:
         print(self._serialized_namelist_of(namelist))
