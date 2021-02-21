@@ -73,7 +73,12 @@ class Application(object):
         # switch by command
         if cmdargs.cmd in ('b', 'build'):
             # Build
-            result = self.on_build()
+            result = self.on_build(
+                    cmdargs.outline,
+                    cmdargs.plot,
+                    cmdargs.script,
+                    cmdargs.novel
+                    )
         elif cmdargs.cmd in ('a', 'add'):
             # Add
             if cmdargs.arg0 in ('c', 'chapter'):
@@ -294,9 +299,9 @@ class Application(object):
         return self.on_edit_word(_fname)
 
     ## Build
-    def on_build(self) -> bool:
+    def on_build(self, is_outline: bool, is_plot: bool, is_script: bool, is_novel: bool) -> bool:
         logger.debug("Command: Build project: start")
-        return self.pb.build()
+        return self.pb.build(is_outline, is_plot, is_script, is_novel)
 
     ## Clear trashbox
     def on_clear_trashbox(self) -> bool:

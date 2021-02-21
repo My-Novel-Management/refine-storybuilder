@@ -30,6 +30,10 @@ class CommandlineParser(object):
         self._parser.add_argument('cmd', metavar='command', type=str, help='builder command')
         self._parser.add_argument('arg0', metavar='arg0', type=str, nargs='?', help='sub command or any arguments')
         self._parser.add_argument('arg1', metavar='arg1', type=str, nargs='?', help='any arguments')
+        self._parser.add_argument('-o', '--outline', help='outline output', action='store_true')
+        self._parser.add_argument('-p', '--plot', help='plot output', action='store_true')
+        self._parser.add_argument('-s', '--script', help='script output', action='store_true')
+        self._parser.add_argument('-n', '--novel', help='novel output', action='store_true')
         logger.debug("Initialized: Commandline Parser")
 
     # methods

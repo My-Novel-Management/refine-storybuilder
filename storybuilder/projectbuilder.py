@@ -9,6 +9,7 @@ from storybuilder.datamanager import DataManager, ActionRecord
 from storybuilder.dbmanager import DBManager
 from storybuilder.formatter import StoryFormatter
 from storybuilder.projectfilemanager import ProjectFileManager
+from storybuilder.textconverter import TextConverter
 from storybuilder.util import assertion
 from storybuilder.util.filepath import conv_only_basename
 from storybuilder.util.log import logger
@@ -31,9 +32,17 @@ class ProjectBuilder(object):
         self.dm = DataManager()
         self.dbm = DBManager()
         self.formatter = StoryFormatter()
+        self.txt_converter = TextConverter()
 
     # methods
-    def build(self) -> bool:
+    def build(self,
+            is_outline: bool,
+            is_plot: bool,
+            is_script: bool,
+            is_novel: bool) -> bool:
+
+        result = True
+
         # create db
         self._create_tagname_db()
 
@@ -47,17 +56,24 @@ class ProjectBuilder(object):
         story_records = self._get_story_record_list(serialized)
 
         # outline data output
-        #result = self.on_outline_output(story_records)
+        if is_outline:
+            result = self.on_outline_output(story_records)
 
         # plot data output
-        #result = self.on_plot_output(story_records)
+        if is_plot:
+            result = self.on_plot_output(story_records)
 
         # script data output
-        result = self.on_script_output(story_records)
+        if is_script:
+            result = self.on_script_output(story_records)
 
         # novel data output
-        result = self.on_novel_output(story_records)
-        return True
+        if is_novel:
+            result = self.on_novel_output(story_records)
+
+        # base data output
+        # TODO
+        return result
 
     # about outline
     def on_outline_output(self, story_records: list) -> bool:
@@ -104,8 +120,11 @@ class ProjectBuilder(object):
                 + self.formatter.conv_outline_format('scene', scene_titles, scene_outlines)
         output_data = outputs + [self.formatter.get_break_line()] + outlines
 
+        # tag convert
+        output_data_fixed = self._tag_converted(output_data)
+
         # output data
-        return self.fm.output_as_outline(output_data)
+        return self.fm.output_as_outline(output_data_fixed)
 
     # about plot
     def on_plot_output(self, story_records: list) -> bool:
@@ -150,8 +169,11 @@ class ProjectBuilder(object):
                 + self.formatter.conv_plot_format('scene', scene_titles, scene_plots)
         output_data = outputs + [self.formatter.get_break_line()] + plots
 
+        # tag convert
+        output_data_fixed = self._tag_converted(output_data)
+
         # output data
-        return self.fm.output_as_plot(output_data)
+        return self.fm.output_as_plot(output_data_fixed)
 
     # about script
     def on_script_output(self, story_records: list) -> bool:
@@ -178,9 +200,10 @@ class ProjectBuilder(object):
         output_data = outputs + [self.formatter.get_break_line()] + scripts
 
         # convert tags
+        output_data_fixed = self._tag_converted(output_data)
 
         # output data
-        return self.fm.output_as_script(output_data)
+        return self.fm.output_as_script(output_data_fixed)
 
     # about novel
     def on_novel_output(self, story_records: list) -> bool:
@@ -201,15 +224,18 @@ class ProjectBuilder(object):
         # get contents list
         contents = self._get_contents_list(story_records)
 
-        # create output data
-        outputs = self.formatter.conv_contents_list_format(contents)
+        # format
+        out_head = self.formatter.conv_contents_list_format(contents)
         novels = self.formatter.conv_novel_format(codes, False)
-        output_data = outputs + [self.formatter.get_break_line()] + novels
+
+        # create output data
+        output_data = out_head + [self.formatter.get_break_line()] + novels
 
         # convert tags
+        output_data_fixed = self._tag_converted(output_data)
 
         # output data
-        return self.fm.output_as_novel(output_data)
+        return self.fm.output_as_novel(output_data_fixed)
 
     # private methods
     def _apply_instructions(self, action_records: list, is_script: bool=False) -> list:
@@ -375,3 +401,10 @@ class ProjectBuilder(object):
                         self.fm.get_basename_from_ordername(record),
                         self.fm.get_data_from_ordername(record)))
         return tmp
+
+    def _tag_converted(self, output_list: list) -> list:
+        tmp = []
+        for line in output_list:
+            tmp.append(self.txt_converter.conv_text_from_tag(line, self.dbm.names))
+        return tmp
+

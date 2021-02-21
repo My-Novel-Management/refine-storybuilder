@@ -18,11 +18,14 @@ class DBManager(object):
         lastname, firstname = fullname.split(',') if ',' in fullname else (name, name)
         _first = firstname if firstname else name
         _last = lastname if lastname else name
+        _full = f"{_last}{_first}" if firstname else name
+        _efull = f"{_first}・{_last}" if firstname else name
         return self._add_name_to_namedb(key, name) \
                 and self._add_name_to_namedb(f"p_{key}", name) \
-                and self._add_name_to_namedb(f"fn_{key}", name) \
-                and self._add_name_to_namedb(f"ln_{key}", name) \
-                and self._add_name_to_namedb(f"full_{key}", name)
+                and self._add_name_to_namedb(f"fn_{key}", _first) \
+                and self._add_name_to_namedb(f"ln_{key}", _last) \
+                and self._add_name_to_namedb(f"full_{key}", _full) \
+                and self._add_name_to_namedb(f"efull_{key}", _efull)
 
     def add_stage_name(self, key: str, name: str) -> bool:
         return self._add_name_to_namedb(key, name) and self._add_name_to_namedb(f"st_{key}", name)
