@@ -264,17 +264,22 @@ class ProjectBuilder(object):
                 elif rcd.subject == 'B':
                     # Break line
                     tmp.append(self.dm.get_action_br())
+                    is_br_mode = True
                 else:
                     logger.error("Unknown an instruction!: %s", rcd.subject)
             elif rcd.act_type == 'action':
                 if is_script:
+                    # script mode
                     if rcd.act_type in ('talk', 'think'):
                         if not rcd.outline:
                             continue
                 else:
-                    if not rcd.outline and not rcd.desc:
+                    # novel mode
+                    if rcd.act_type in ('talk',) and not rcd.outline and not rcd.desc:
                         continue
-                if is_br_mode and not (rcd.action in ('talk', 'think')):
+                    elif not rcd.desc:
+                        continue
+                if is_br_mode and not (rcd.action in ('talk',)):
                     tmp.append(self.dm.get_action_indent())
                 elif not is_br_mode and not has_first_indent:
                     tmp.append(self.dm.get_action_indent())

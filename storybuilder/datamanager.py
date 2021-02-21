@@ -80,7 +80,7 @@ class DataManager(object):
             return ActionRecord('action', subject, act, outline, text, [], comment)
         elif _base:
             # text
-            return ActionRecord("text", _base)
+            return ActionRecord("action", "", "text", _base, _base)
         else:
             return None
 
@@ -128,6 +128,12 @@ class DataManager(object):
                 return StoryCode('monologue', body, record.subject)
             elif body:
                 return StoryCode('description', body, record.subject)
+            else:
+                return None
+        elif 'text' == record.act_type:
+            body = record.outline if is_script else record.desc
+            if body:
+                return StoryCode('description', body)
             else:
                 return None
         elif 'br' == record.act_type:
