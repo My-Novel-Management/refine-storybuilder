@@ -4,6 +4,7 @@
 import re
 
 # my modules
+from storybuilder.util.log import logger
 
 
 class TextConverter(object):

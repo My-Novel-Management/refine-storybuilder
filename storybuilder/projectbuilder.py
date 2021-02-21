@@ -184,9 +184,13 @@ class ProjectBuilder(object):
         # run instructions
         act_records_fixed = self._apply_instructions(act_records, True)
 
+        # convert tags by subjects
+        act_records_updated = self._tag_converted_by_subject(act_records_fixed,
+                self._get_callings())
+
         # get story codes
         codes = []
-        for rcd in act_records_fixed:
+        for rcd in act_records_updated:
             ret = self.dm.conv_storycode_from_action_record(rcd, True)
             if ret:
                 codes.append(ret)
@@ -214,9 +218,13 @@ class ProjectBuilder(object):
         # run instructions
         act_records_fixed = self._apply_instructions(act_records)
 
+        # convert tags in subjects
+        act_records_updated = self._tag_converted_by_subject(act_records_fixed,
+                self._get_callings())
+
         # get story codes
         codes = []
-        for rcd in act_records_fixed:
+        for rcd in act_records_updated:
             ret = self.dm.conv_storycode_from_action_record(rcd, False)
             if ret:
                 codes.append(ret)
@@ -264,7 +272,7 @@ class ProjectBuilder(object):
                         if not rcd.outline:
                             continue
                 else:
-                    if not rcd.outline or not rcd.desc:
+                    if not rcd.outline and not rcd.desc:
                         continue
                 if is_br_mode and not (rcd.action in ('talk', 'think')):
                     tmp.append(self.dm.get_action_indent())
@@ -374,6 +382,14 @@ class ProjectBuilder(object):
                 continue
         return tmp
 
+    def _get_callings(self) -> dict:
+        tmp = {}
+        persons = self.fm.get_person_list()
+        for fname in persons:
+            data = self.fm.get_data_from_person_file(fname)
+            tmp[conv_only_basename(fname)] = data['calling']
+        return tmp
+
     def _get_serialized_order_fnames(self, order_data: dict) -> list:
         tmp = []
         for ch_record in order_data['book']:
@@ -406,5 +422,30 @@ class ProjectBuilder(object):
         tmp = []
         for line in output_list:
             tmp.append(self.txt_converter.conv_text_from_tag(line, self.dbm.names))
+        return tmp
+
+    def _tag_converted_by_subject(self, action_records: list, callings: dict) -> list:
+        tmp = []
+        for rcd in action_records:
+            assert isinstance(rcd, ActionRecord)
+            if rcd.act_type == 'action':
+                if rcd.subject in callings:
+                    calling = callings[rcd.subject]
+                    # NOTE: prefix setting
+                    calling['S'] = f"${rcd.subject}"
+                    calling['M'] = calling['me'] if 'me' in calling else '私'
+                    tmp.append(ActionRecord(
+                        rcd.act_type,
+                        rcd.subject,
+                        self.txt_converter.conv_text_from_tag(rcd.action, calling),
+                        self.txt_converter.conv_text_from_tag(rcd.outline, calling),
+                        self.txt_converter.conv_text_from_tag(rcd.desc, calling),
+                        rcd.flags,
+                        self.txt_converter.conv_text_from_tag(rcd.note, calling),
+                        ))
+                else:
+                    tmp.append(rcd)
+            else:
+                tmp.append(rcd)
         return tmp
 
