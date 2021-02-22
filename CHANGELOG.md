@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- github workflow/python-ci
+- requirements text
+- application
+- assertion
+- commandline parser
+- logger
+- setting
+### Changed
+- setup: using requirements
 
 ## [0.0.0] - 2021-02-11
 ### Added
